@@ -20,11 +20,6 @@ class IdCardAuthentication extends Authentication
     const SSL_CLIENT_VERIFY = 'SSL_CLIENT_VERIFY';
     const SSL_CLIENT_VERIFY_SUCCESSFUL = 'SUCCESS';
 
-    public function __construct()
-    {
-
-    }
-
     public function isSuccessful()
     {
         return isset($_SERVER[self::SSL_CLIENT_VERIFY]) && $_SERVER[self::SSL_CLIENT_VERIFY] == self::SSL_CLIENT_VERIFY_SUCCESSFUL;
