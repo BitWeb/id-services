@@ -15,11 +15,6 @@ namespace BitWeb\IdCard;
  *
  */
 
-class Authentication
+abstract class Authentication
 {
-
-    public function __construct()
-    {
-
-    }
 }
