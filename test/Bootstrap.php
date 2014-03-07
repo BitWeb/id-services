@@ -6,6 +6,4 @@ if (!$loader = @include __DIR__ . '/../vendor/autoload.php') {
         'php composer.phar install' . PHP_EOL);
 }
 
-die('siin');
-
 $loader->add('BitWeb\IdCard', __DIR__);
