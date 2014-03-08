@@ -4,7 +4,7 @@ php:
   - "5.4"
   - "5.3"
 
-install:
+before_script:
   - composer self-update
   - composer install
 
