@@ -59,7 +59,9 @@ class IdCardAuthentication extends Authentication
      */
     private function decodeToUtf8($str)
     {
-        $str = preg_replace("/\\\\x([0-9ABCDEF]{1,2})/e", "chr(hexdec('\\1'))", $str);
+        $str = preg_replace_callback("/\\\\x([0-9ABCDEF]{1,2})/", function ($matches) {
+            return chr(hexdec($matches[1]));
+        }, $str);
         $result = '';
         $encoding = mb_detect_encoding($str, 'ASCII, UCS2, UTF8');
         if ($encoding == 'ASCII') {
