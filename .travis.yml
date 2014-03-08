@@ -8,5 +8,4 @@ install:
   - composer self-update
   - composer install
 
-spcipt:
-  - ./bin/phpunit -v
+spcipt: phpunit --coverage-text -c tests/
