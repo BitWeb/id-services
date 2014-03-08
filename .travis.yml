@@ -7,7 +7,3 @@ before_script:
   - composer install
 
 script: phpunit --coverage-text -c test/
-
-notifications:
-  email:
-    - rain@bitweb.ee
