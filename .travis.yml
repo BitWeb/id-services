@@ -8,7 +8,7 @@ before_script:
   - composer self-update
   - composer install
 
-spcipt: phpunit --coverage-text -c tests/
+spcipt: phpunit --coverage-text -c test/
 
 notifications:
   email:
