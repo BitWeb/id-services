@@ -6,6 +6,3 @@ php:
 
 install:
   - composer install
-  - php ini_set('error_reporting', E_ALL)
-  - php display_errors('On')
-  
