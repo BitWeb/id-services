@@ -9,3 +9,7 @@ before_script:
   - composer install
 
 spcipt: phpunit --coverage-text -c tests/
+
+notifications:
+  email:
+    - rain@bitweb.ee
