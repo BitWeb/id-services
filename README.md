@@ -13,13 +13,13 @@ php composer.phar require bitweb/id-card
 # (When asked for a version, type `1.*`)
 ```
 
-or add 
+or add following to composer.json
+
 ```json
 "require": {
   "bitweb/id-card": "1.*"
 }
 ```
-in composer.json
 
 #### Integrating with apache
 
@@ -31,8 +31,6 @@ chdir(dirname(__DIR__));
 
 // Setup autoloading
 include '../init_autoloader.php';
-
-$loader->add('IdCard', '../vendor/');
 
 session_start();
 
