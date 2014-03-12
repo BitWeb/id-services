@@ -6,4 +6,8 @@ id-card
 BitWeb plugin for Id Card authentication.
 
 ### Usage:
-TODO
+
+```sh
+php composer.phar require bitweb/id-card
+# (When asked for a version, type `1.*`)
+```
