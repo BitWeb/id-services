@@ -1,6 +1,6 @@
 {
     "name": "bitweb/id-card",
-    "description": "BitWeb extension for Estonian ID-Card authentication.",
+    "description": "BitWeb extension for Estonian ID-Card authentication and signing.",
     "license": "proprietary",
     "homepage": "http://bitweb.ee/",
     "require": {
