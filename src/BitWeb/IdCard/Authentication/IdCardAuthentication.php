@@ -46,6 +46,12 @@ class IdCardAuthentication extends Authentication
         self::saveIdCardUserToSession($user);
     }
 
+    /**
+     * Get currently logged in user.
+     *
+     * @return IdCardUser
+     * @throws AuthenticationException
+     */
     public static function getLoggedInUser()
     {
         if (!self::isUserLoggedIn()) {
@@ -97,7 +103,7 @@ class IdCardAuthentication extends Authentication
 
     public static function logout()
     {
-        if (!isset($_SESSION[self::ID_CARD_USER_AUTH_SESSION_KEY])) {
+        if (!self::isUserLoggedIn()) {
             throw new AuthenticationException('User is not logged in.');
         }
 

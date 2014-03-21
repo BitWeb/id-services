@@ -2,11 +2,25 @@
 
 namespace BitWeb\IdCardTest\Signing;
 
+use BitWeb\IdCard\Authentication\IdCardAuthentication;
 use BitWeb\IdCard\Signing\File;
 
 class FileTest extends \PHPUnit_Framework_TestCase
 {
     public $testFileName = 'test/BitWeb/IdCardTest/TestAsset/file.txt';
+
+    protected function login()
+    {
+        $_SERVER[IdCardAuthentication::SSL_CLIENT_VERIFY] = IdCardAuthentication::SSL_CLIENT_VERIFY_SUCCESSFUL;
+        $_SERVER['SSL_CLIENT_S_DN'] = 'GN=Mari-Liis/SN=Männik/serialNumber=47101010033/C=EST';
+
+        IdCardAuthentication::login();
+    }
+
+    protected function logout()
+    {
+        IdCardAuthentication::logout();
+    }
 
     public function testGetMimeType()
     {
@@ -30,7 +44,9 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testAddFileFromFile()
     {
-        $tempFile = File::addFileFromFile($this->testFileName);
+        $this->login();
+
+        $tempFile = File::addFile($this->testFileName);
         $this->assertTrue(is_string($tempFile));
         $this->assertTrue(file_exists(File::getTempDir() . $tempFile));
     }
@@ -40,12 +56,24 @@ class FileTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddFileFromFileThrowsWhenFileDoesNotExist()
     {
-        $this->assertFalse(File::addFileFromFile());
+        $this->login();
+        File::addFile();
+    }
+
+    /**
+     * @expectedException \BitWeb\IdCard\Authentication\AuthenticationException
+     */
+    public function testAddFileThrowsWhenNotLoggedIn()
+    {
+        $this->logout();
+        File::addFile($this->testFileName);
     }
 
     public function testRetrieveFileReturnsArray()
     {
-        $tempFile = File::addFileFromFile($this->testFileName);
+        $this->login();
+
+        $tempFile = File::addFile($this->testFileName);
         $this->assertTrue(is_array(File::retrieveFile($tempFile)));
     }
 
@@ -54,9 +82,10 @@ class FileTest extends \PHPUnit_Framework_TestCase
      */
     public function testRetrieveFileReturnsFalseWhenFileDoesNotExist()
     {
-        $tempFile = File::addFileFromFile($this->testFileName);
+        $this->login();
+        $tempFile = File::addFile($this->testFileName);
         self::removeTempFiles();
-        $this->assertFalse(File::retrieveFile($tempFile));
+        File::retrieveFile($tempFile);
     }
 
     public static function tearDownAfterClass()
@@ -64,16 +93,16 @@ class FileTest extends \PHPUnit_Framework_TestCase
         self::removeTempFiles();
     }
 
-    public static function removeTempFiles()
+    protected static function removeTempFiles()
     {
-        if (is_dir(File::getTempDir())) {
-            foreach (scandir(File::getTempDir()) as $file) {
-                if (file_exists(File::getTempDir() . $file) && !in_array($file, ['.', '..'])) {
-                    unlink(File::getTempDir() . $file);
+        $dir = File::getTempDir();
+        if (is_dir($dir)) {
+            foreach (scandir($dir) as $file) {
+                if (file_exists($dir . $file) && !in_array($file, ['.', '..'])) {
+                    unlink($dir . $file);
                 }
             }
 
-            $dir = File::getTempDir();
             while (true) {
                 rmdir($dir);
                 if (substr_count($dir, '/') === 1) {

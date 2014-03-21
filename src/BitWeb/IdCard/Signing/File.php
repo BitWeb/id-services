@@ -3,6 +3,8 @@
 namespace BitWeb\IdCard\Signing;
 
 
+use BitWeb\IdCard\Authentication\AuthenticationException;
+use BitWeb\IdCard\Authentication\IdCardAuthentication;
 use BitWeb\IdCard\Signing\Exception\FileDoesNotExistException;
 
 /**
@@ -44,7 +46,7 @@ class File
      * @return string
      * @throws Exception\FileDoesNotExistException
      */
-    public static function addFileFromFile($fileName = null)
+    public static function addFile($fileName = null)
     {
         if (!file_exists($fileName)) {
             throw new FileDoesNotExistException('Specified file does not exist: ' . $fileName);
@@ -60,10 +62,17 @@ class File
      * @param string $name
      * @param string $mime
      * @return string generated file name
+     * @throws \BitWeb\IdCard\Authentication\AuthenticationException
      */
     protected static function saveTempFile($contents, $name = 'data.bin', $mime = null)
     {
+        if (!IdCardAuthentication::isUserLoggedIn()) {
+            throw new AuthenticationException('User is not logged in.');
+        }
+
         self::createTempDir();
+
+        $user = IdCardAuthentication::getLoggedInUser();
 
         $mime = $mime === null ? self::getMimeType($name) : $mime;
         $fileId = self::generateFileId($name, $mime);
@@ -75,10 +84,9 @@ class File
             'createdTime' => time(),
             'signatures' => array(),
             'owner' => array(
-                // TODO
-                'UserSurname' => '',
-                'UserGivenName' => '',
-                'UserIDCode' => ''
+                'UserSurname' => $user->getLastName(),
+                'UserGivenName' => $user->getFirstName(),
+                'UserIDCode' => $user->getSocialSecurityNumber()
             )
         );
 
