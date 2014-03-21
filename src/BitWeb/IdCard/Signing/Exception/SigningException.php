@@ -2,8 +2,9 @@
 
 namespace BitWeb\IdCard\Signing\Exception;
 
+use BitWeb\IdCard\IdCardException;
 
-class SigningException extends \RuntimeException
+class SigningException extends IdCardException
 {
 
 } 

@@ -1,6 +1,6 @@
 <?php
 
-namespace BitWeb\IdCard;
+namespace BitWeb\IdCard\Authentication;
 
 /**
  *

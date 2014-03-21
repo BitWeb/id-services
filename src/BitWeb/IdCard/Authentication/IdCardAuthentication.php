@@ -1,35 +1,30 @@
 <?php
 
-namespace BitWeb\IdCard;
+namespace BitWeb\IdCard\Authentication;
 
 /**
+ * Id Card authentication.
  *
- *
+ * Original version by:
  * @author Tõnis Tobre <tobre@bitweb.ee>
  * @copyright Copyright (C) 2009. All rights reserved.
- *
- * Change log:
- * Date            User            Comment
- * ---------------------------------------------
- * Apr 2, 2009    tobre            Initial version
- *
  */
 class IdCardAuthentication extends Authentication
 {
 
     const SSL_CLIENT_VERIFY = 'SSL_CLIENT_VERIFY';
     const SSL_CLIENT_VERIFY_SUCCESSFUL = 'SUCCESS';
+    const ID_CARD_USER_AUTH_SESSION_KEY = 'idCardAuth';
 
-    public function isSuccessful()
+    public static function isSuccessful()
     {
         return isset($_SERVER[self::SSL_CLIENT_VERIFY]) && $_SERVER[self::SSL_CLIENT_VERIFY] == self::SSL_CLIENT_VERIFY_SUCCESSFUL;
     }
 
-
-    public function getUser()
+    public static function login()
     {
-        if (!$this->isSuccessful()) {
-            throw new AuthenticationException('User not logged in');
+        if (!self::isSuccessful()) {
+            throw new AuthenticationException('User not authenticated!');
         }
 
         $cardInfo = explode('/', $_SERVER['SSL_CLIENT_S_DN']);
@@ -38,7 +33,7 @@ class IdCardAuthentication extends Authentication
         foreach ($cardInfo as $info) {
             if ($info != null) {
                 $parameterArray = explode('=', $info);
-                $parameters[$parameterArray[0]] = $this->decodeToUtf8($parameterArray[1]);
+                $parameters[$parameterArray[0]] = self::decodeToUtf8($parameterArray[1]);
             }
         }
 
@@ -48,7 +43,16 @@ class IdCardAuthentication extends Authentication
         $user->setSocialSecuritynumber($parameters['serialNumber']);
         $user->setCountry($parameters['C']);
 
-        return $user;
+        self::saveIdCardUserToSession($user);
+    }
+
+    public static function getLoggedInUser()
+    {
+        if (!self::isUserLoggedIn()) {
+            throw new AuthenticationException('User not logged in');
+        }
+
+        return unserialize($_SESSION[self::ID_CARD_USER_AUTH_SESSION_KEY]);
     }
 
     /**
@@ -57,7 +61,7 @@ class IdCardAuthentication extends Authentication
      * @param String $str String to decode
      * @return String Decoded string
      */
-    private function decodeToUtf8($str)
+    protected static function decodeToUtf8($str)
     {
         $str = preg_replace_callback("/\\\\x([0-9ABCDEF]{1,2})/", function ($matches) {
             return chr(hexdec($matches[1]));
@@ -75,5 +79,28 @@ class IdCardAuthentication extends Authentication
         }
 
         return $result;
+    }
+
+    public static function saveIdCardUserToSession(IdCardUser $idCardUser)
+    {
+        $_SESSION[self::ID_CARD_USER_AUTH_SESSION_KEY] = serialize($idCardUser);
+    }
+
+    public static function isUserLoggedIn()
+    {
+        if (isset($_SESSION[self::ID_CARD_USER_AUTH_SESSION_KEY]) && unserialize($_SESSION[self::ID_CARD_USER_AUTH_SESSION_KEY]) instanceof IdCardUser) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function logout()
+    {
+        if (!isset($_SESSION[self::ID_CARD_USER_AUTH_SESSION_KEY])) {
+            throw new AuthenticationException('User is not logged in.');
+        }
+
+        unset($_SESSION[self::ID_CARD_USER_AUTH_SESSION_KEY]);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
-namespace BitWeb\IdCard;
+namespace BitWeb\IdCard\Authentication;
+use BitWeb\IdCard\IdCardException;
 
 /**
  *
@@ -15,7 +16,7 @@ namespace BitWeb\IdCard;
  *
  */
 
-class AuthenticationException extends \Exception
+class AuthenticationException extends IdCardException
 {
 
 }

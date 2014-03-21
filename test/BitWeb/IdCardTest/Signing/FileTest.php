@@ -1,10 +1,12 @@
 <?php
 
-namespace BitWeb\IdCard\Signing;
+namespace BitWeb\IdCardTest\Signing;
+
+use BitWeb\IdCard\Signing\File;
 
 class FileTest extends \PHPUnit_Framework_TestCase
 {
-    public $testFileName = 'test/BitWeb/IdCard/TestAsset/file.txt';
+    public $testFileName = 'test/BitWeb/IdCardTest/TestAsset/file.txt';
 
     public function testGetMimeType()
     {
