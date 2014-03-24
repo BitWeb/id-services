@@ -26,7 +26,8 @@ class SignatureServiceTest extends \PHPUnit_Framework_TestCase
         IdCardAuthentication::login();
 
         $service = new SignatureService();
-        $service->startSession($this->testFileName);
+        $service->initSoap();
+        $this->assertTrue(is_int($service->startSession($this->testFileName)));
     }
 
     public function testStartServiceDoesAutomaticLogin()
@@ -35,6 +36,7 @@ class SignatureServiceTest extends \PHPUnit_Framework_TestCase
         $this->setUserAuthInfo();
 
         $service = new SignatureService();
-        $service->startSession($this->testFileName);
+        $service->initSoap();
+        $this->assertTrue(is_int($service->startSession($this->testFileName)));
     }
 } 
