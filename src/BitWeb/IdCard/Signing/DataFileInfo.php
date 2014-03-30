@@ -3,7 +3,7 @@
 namespace BitWeb\IdCard\Signing;
 
 
-class DataFile
+class DataFileInfo
 {
     const CONTENT_TYPE_HASH_CODE = 'HASHCODE';
     const CONTENT_TYPE_EMBEDDED_BASE64 = 'EMBEDDED_BASE64';
@@ -13,15 +13,15 @@ class DataFile
 
     public static $xmlNamespace = 'http://www.sk.ee/DigiDoc/v1.3.0#';
 
-    public static $contentTypes = array(
+    public static $contentTypes = [
         self::CONTENT_TYPE_EMBEDDED_BASE64,
         self::CONTENT_TYPE_HASH_CODE
-    );
+    ];
 
-    public static $digestTypes = array(
+    public static $digestTypes = [
         self::DIGEST_TYPE_SHA1,
         self::DIGEST_TYPE_SHA256
-    );
+    ];
 
     protected $Id;
 
@@ -206,8 +206,8 @@ class DataFile
     {
         $this->setFilename(basename($fileName));
         $this->setContentType(self::CONTENT_TYPE_HASH_CODE);
-        $this->setMimeType(DataFile::detectMimeType($fileName));
-        $this->setSize(DataFile::detectFileSize($fileName));
+        $this->setMimeType(DataFileInfo::detectMimeType($fileName));
+        $this->setSize(DataFileInfo::detectFileSize($fileName));
         $this->generateDigestValue($fileName, self::DIGEST_TYPE_SHA1);
     }
 

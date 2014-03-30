@@ -15,20 +15,20 @@ class SignedDocInfo
     protected $Version;
 
     /**
-     * @var DataFile
+     * @var DataFileInfo
      */
     protected $DataFileInfo;
 
     /**
-     * @param \BitWeb\IdCard\Signing\DataFile $DataFileInfo
+     * @param \BitWeb\IdCard\Signing\DataFileInfo $DataFileInfo
      */
-    public function setDataFileInfo(DataFile $DataFileInfo)
+    public function setDataFileInfo(DataFileInfo $DataFileInfo)
     {
         $this->DataFileInfo = $DataFileInfo;
     }
 
     /**
-     * @return \BitWeb\IdCard\Signing\DataFile
+     * @return \BitWeb\IdCard\Signing\DataFileInfo
      */
     public function getDataFileInfo()
     {

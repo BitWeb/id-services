@@ -2,7 +2,7 @@
 
 namespace BitWeb\IdCardTest\Signing;
 
-use BitWeb\IdCard\Signing\DataFile;
+use BitWeb\IdCard\Signing\DataFileInfo;
 use BitWeb\IdCard\Signing\SignedDocInfo;
 
 class SignedDocInfoTest extends \PHPUnit_Framework_TestCase
@@ -16,7 +16,7 @@ class SignedDocInfoTest extends \PHPUnit_Framework_TestCase
     {
         $format = 'DIGIDOC-XML';
         $version = '1.3';
-        $dataFileInfo = new DataFile();
+        $dataFileInfo = new DataFileInfo();
 
         $signedDocInfo = new SignedDocInfo();
         $signedDocInfo->setFormat($format);
@@ -25,6 +25,6 @@ class SignedDocInfoTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($format, $signedDocInfo->getFormat());
         $this->assertEquals($version, $signedDocInfo->getVersion());
-        $this->assertInstanceOf(DataFile::class, $signedDocInfo->getDataFileInfo());
+        $this->assertInstanceOf(DataFileInfo::class, $signedDocInfo->getDataFileInfo());
     }
 } 

@@ -26,8 +26,10 @@ class SignatureServiceTest extends \PHPUnit_Framework_TestCase
         IdCardAuthentication::login();
 
         $service = new SignatureService();
+        $service->setWsdl();
         $service->initSoap();
         $this->assertTrue(is_int($service->startSession($this->testFileName)));
+        $this->assertEquals('https://www.openxades.org:9443/?wsdl', $service->getWsdl());
     }
 
     public function testStartServiceDoesAutomaticLogin()
@@ -36,6 +38,7 @@ class SignatureServiceTest extends \PHPUnit_Framework_TestCase
         $this->setUserAuthInfo();
 
         $service = new SignatureService();
+        $service->setWsdl();
         $service->initSoap();
         $this->assertTrue(is_int($service->startSession($this->testFileName)));
     }

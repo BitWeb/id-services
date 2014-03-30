@@ -7,11 +7,21 @@ use Zend\Soap\Client;
 
 class SignatureService
 {
-    protected $testWsdl = 'https://www.openxades.org:9443/?wsdl';
+    protected $wsdl;
 
     protected $classMap = [
-        'DataFileInfo' => 'BitWeb\IdCard\Signing\DataFile',
-        'SignedDocInfo' => 'BitWeb\IdCard\Signing\SignedDocInfo'
+        'CertificateInfo'           => Certificate\Info::class,
+        'CertificatePolicy'         => Certificate\Policies::class,
+        'ConfirmationInfo'          => ConfirmationInfo::class,
+        'DataFileInfo'              => DataFileInfo::class,
+        'DateTime'                  => \DateTime::class,
+        'Error'                     => Error::class,
+        'ResponderCertificate'      => Certificate\Info::class,
+        'SignedDocInfo'             => SignedDocInfo::class,
+        'SignatureInfo'             => Signature\Info::class,
+        'SignatureProductionPlace'  => Signature\ProductionPlace::class,
+        'SignerInfo'                => Signer\Info::class,
+        'SignerRole'                => Signer\Role::class,
     ];
 
     /**
@@ -19,10 +29,20 @@ class SignatureService
      */
     protected $soap;
 
+    public function setWsdl($wsdl = 'https://www.openxades.org:9443/?wsdl')
+    {
+        $this->wsdl = $wsdl;
+    }
+
+    public function getWsdl()
+    {
+        return $this->wsdl;
+    }
+
     public function initSoap()
     {
-        $this->soap = new Client($this->testWsdl, array(
-            'soap_version' => SOAP_1_1,
+        $this->soap = new Client($this->wsdl, array(
+            'soapVersion' => SOAP_1_1,
             'classMap' => $this->classMap
         ));
     }
@@ -33,11 +53,21 @@ class SignatureService
             IdCardAuthentication::login();
         }
 
-        $dataFile = new DataFile();
+        $dataFile = new DataFileInfo();
         $dataFile->fillData($fileName);
 
         $result = $this->soap->startSession("", "", true, $dataFile->toArray());
 
         return $result['Sesscode'];
+    }
+
+    public function prepareSignature($sessionCode, $certificateId, $certificateHex)
+    {
+        return $this->soap->prepareSignature($sessionCode, $certificateHex, $certificateId);
+    }
+
+    public function finalizeSignature($sessionCode, $signatureId, $signatureHex)
+    {
+        return $this->soap->finalizeSignature($sessionCode, $signatureId, $signatureHex);
     }
 }

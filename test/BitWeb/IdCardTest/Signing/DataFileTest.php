@@ -2,27 +2,27 @@
 
 namespace BitWeb\IdCardTest\Signing;
 
-use BitWeb\IdCard\Signing\DataFile;
+use BitWeb\IdCard\Signing\DataFileInfo;
 
 class DataFileTest extends \PHPUnit_Framework_TestCase
 {
     public function testCanCreate()
     {
-        new DataFile();
+        new DataFileInfo();
     }
 
     public function testSettersAndGetters()
     {
         $id = "D0";
         $fileName = 'test.txt';
-        $contentType = DataFile::CONTENT_TYPE_EMBEDDED_BASE64;
+        $contentType = DataFileInfo::CONTENT_TYPE_EMBEDDED_BASE64;
         $mimeType = 'text/plain';
         $size = 42;
-        $digestType = DataFile::DIGEST_TYPE_SHA1;
+        $digestType = DataFileInfo::DIGEST_TYPE_SHA1;
         $digestValue = 'QeFwxdWPddDTA2ozRcdhR/WEf/I=';
         $dfData = 'dfData';
 
-        $dataFile = new DataFile();
+        $dataFile = new DataFileInfo();
         $dataFile->setId($id);
         $dataFile->setFilename($fileName);
         $dataFile->setContentType($contentType);
@@ -47,7 +47,7 @@ class DataFileTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetContentTypeThrowsOnInvalidValue()
     {
-        $dataFile = new DataFile();
+        $dataFile = new DataFileInfo();
 
         $dataFile->setContentType('wrong type');
     }
@@ -57,7 +57,7 @@ class DataFileTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetDigestTypeThrowsOnInvalidValue()
     {
-        $dataFile = new DataFile();
+        $dataFile = new DataFileInfo();
 
         $dataFile->setDigestType('wrong type');
     }
