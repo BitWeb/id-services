@@ -26,6 +26,10 @@ class SigningTest extends \PHPUnit_Framework_TestCase
 
     public function testSigningProcess()
     {
+        if ($this->getConfig()['signature']['hex'] === null) {
+            $this->markTestSkipped('Test skipped, because no config was found.');
+        }
+
         // login
         $this->setSuccess();
         $this->setUserAuthInfo();

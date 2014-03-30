@@ -9,7 +9,7 @@ class InfoTest extends \PHPUnit_Framework_TestCase
 {
     public function testCanCreate()
     {
-        new Info();
+        $this->assertInstanceOf(Info::class, new Info());
     }
 
     public function testGettersAndSetters()

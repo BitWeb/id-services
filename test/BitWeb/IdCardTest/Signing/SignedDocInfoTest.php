@@ -9,7 +9,7 @@ class SignedDocInfoTest extends \PHPUnit_Framework_TestCase
 {
     public function testCanCreate()
     {
-        new SignedDocInfo();
+        $this->assertInstanceOf(SignedDocInfo::class, new SignedDocInfo());
     }
 
     public function testGettersAndSetters()

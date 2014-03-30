@@ -8,7 +8,7 @@ class DataFileTest extends \PHPUnit_Framework_TestCase
 {
     public function testCanCreate()
     {
-        new DataFileInfo();
+        $this->assertInstanceOf(DataFileInfo::class, new DataFileInfo());
     }
 
     public function testSettersAndGetters()
