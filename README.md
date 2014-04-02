@@ -17,7 +17,7 @@ or add following to composer.json
 
 ```json
 "require": {
-  "bitweb/id-card": "1.*"
+  "bitweb/id-card": "dev-signing"
 }
 ```
 
