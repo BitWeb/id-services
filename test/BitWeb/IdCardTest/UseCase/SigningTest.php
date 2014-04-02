@@ -47,8 +47,5 @@ class SigningTest extends \PHPUnit_Framework_TestCase
 
         //finalize
         $info2 = $service->finalizeSignature($sessionCode, $info['SignatureId'], $this->getConfig()['signature']['hex']);
-        var_dump($info2['SignedDocInfo']->SignatureInfo);
-
-        // get digidoc file
     }
 } 

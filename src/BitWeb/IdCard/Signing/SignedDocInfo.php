@@ -20,6 +20,11 @@ class SignedDocInfo
     protected $DataFileInfo;
 
     /**
+     * @var Signature\Info
+     */
+    protected $SignatureInfo;
+
+    /**
      * @param \BitWeb\IdCard\Signing\DataFileInfo $DataFileInfo
      */
     public function setDataFileInfo(DataFileInfo $DataFileInfo)
@@ -49,6 +54,22 @@ class SignedDocInfo
     public function getFormat()
     {
         return $this->Format;
+    }
+
+    /**
+     * @param \BitWeb\IdCard\Signing\Signature\Info $SignatureInfo
+     */
+    public function setSignatureInfo(Signature\Info $SignatureInfo)
+    {
+        $this->SignatureInfo = $SignatureInfo;
+    }
+
+    /**
+     * @return \BitWeb\IdCard\Signing\Signature\Info
+     */
+    public function getSignatureInfo()
+    {
+        return $this->SignatureInfo;
     }
 
     /**
