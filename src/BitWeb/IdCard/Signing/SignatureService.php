@@ -79,14 +79,14 @@ class SignatureService
         return $this;
     }
 
-    public function startSession($fileName)
+    public function startSession($fileName, $fileOriginalName = null)
     {
         if (!IdCardAuthentication::isUserLoggedIn()) {
             IdCardAuthentication::login();
         }
 
         $dataFile = new DataFileInfo();
-        $dataFile->fillData($fileName);
+        $dataFile->fillData($fileName, $fileOriginalName);
 
         try {
             return $this->soap->startSession("", "", true, $dataFile->toArray())['Sesscode'];
@@ -113,12 +113,12 @@ class SignatureService
         }
     }
 
-    public function getSignedDoc($sessionCode)
+    public function getSignedDoc($sessionCode, $signedFile)
     {
         try {
             $result = $this->soap->getSignedDoc($sessionCode);
             if ($result['Status'] === 'OK') {
-                return html_entity_decode($result['SignedDocData']);
+                return html_entity_decode($this->replaceDataFile($result['SignedDocData'], $signedFile));
             } else {
                 throw new SigningException(self::DDOC_DOWNLOAD_ERROR);
             }
@@ -140,5 +140,17 @@ class SignatureService
     {
         $code = $e->getMessage();
         throw new ServiceException($this->errorCodeMap[$code], $code);
+    }
+
+    protected function replaceDataFile($SignedDocData, $signedFile)
+    {
+        $data = simplexml_load_string($SignedDocData);
+
+        $old = dom_import_simplexml($data->DataFile);
+        $new = DataFileInfo::formXml($data->DataFile->asXml(), $signedFile)->getDomElement();
+        $nodeImport = $old->ownerDocument->importNode($new, true);
+        $old->parentNode->replaceChild($nodeImport, $old);
+
+        return $data->asXML();
     }
 }

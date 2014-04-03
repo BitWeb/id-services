@@ -202,36 +202,41 @@ class DataFileInfo
         return filesize($fileName);
     }
 
-    public function fillData($fileName)
+    public function fillData($fileName, $fileDisplayName = null)
     {
-        $this->setFilename(basename($fileName));
+        $this->setFilename($fileDisplayName === null ? basename($fileName) : $fileDisplayName);
         $this->setContentType(self::CONTENT_TYPE_HASH_CODE);
         $this->setMimeType(DataFileInfo::detectMimeType($fileName));
         $this->setSize(DataFileInfo::detectFileSize($fileName));
-        $this->generateDigestValue($fileName, self::DIGEST_TYPE_SHA1);
+        $this->generateDigestValue(self::DIGEST_TYPE_SHA1);
     }
 
-    protected function generateDigestValue($fileName, $digestType = self::DIGEST_TYPE_SHA1)
+    protected function generateDigestValue($digestType = self::DIGEST_TYPE_SHA1)
     {
         $this->setDigestType($digestType);
 
-        $encoded = hash($digestType, $this->generateXml($fileName));
+        $encoded = hash($digestType, $this->getC14Xml());
 
         $this->setDigestValue(base64_encode(pack('H*', $encoded)));
     }
 
-    protected function generateXml($fileName)
+    public function getC14Xml()
+    {
+        return $this->getDomElement()->C14N(false, false);
+    }
+
+    public function getDomElement()
     {
         $doc = new \DOMDocument(null, 'UTF-8');
-        $dom = new \DOMElement('DataFile', base64_encode(file_get_contents($fileName)) . "\n", self::$xmlNamespace);
+        $dom = new \DOMElement('DataFile', $this->getDfData() . "\n", self::$xmlNamespace);
         $doc->appendChild($dom);
         $dom->setAttribute('ContentType', self::CONTENT_TYPE_EMBEDDED_BASE64);
-        $dom->setAttribute('Filename', basename($fileName));
+        $dom->setAttribute('Filename', $this->getFilename());
         $dom->setAttribute('Id', 'D0');
         $dom->setAttribute('MimeType', $this->getMimeType());
-        $dom->setAttribute('Size', filesize($fileName));
+        $dom->setAttribute('Size', $this->getSize());
 
-        return $dom->C14N(false, false);
+        return $dom;
     }
 
     public function toArray()
@@ -244,5 +249,51 @@ class DataFileInfo
             'DigestType' => $this->DigestType,
             'DigestValue' => $this->DigestValue
         ];
+    }
+
+    /**
+     * Creates new DataFileInfo from xml element
+     *
+     * @param $xml
+     * @param $file
+     * @return DataFileInfo
+     */
+    public static function formXml($xml, $file)
+    {
+        $xml = simplexml_load_string($xml);
+        /** @var  $dataArray \SimpleXMLElement[] */
+        $dataArray = $xml->attributes();
+
+        $dataFileInfo = new DataFileInfo();
+        if (isset($dataArray['Id'])) {
+            $dataFileInfo->setId($dataArray['Id']->__toString());
+        }
+        if (isset($dataArray['Filename'])) {
+            $dataFileInfo->setFilename($dataArray['Filename']->__toString());
+        }
+        if (isset($dataArray['ContentType'])) {
+            $dataFileInfo->setContentType($dataArray['ContentType']->__toString());
+        }
+        if (isset($dataArray['MimeType'])) {
+            $dataFileInfo->setMimeType($dataArray['MimeType']->__toString());
+        }
+        if (isset($dataArray['Size'])) {
+            $dataFileInfo->setSize($dataArray['Size']->__toString());
+        }
+        if (isset($dataArray['DigestType'])) {
+            $dataFileInfo->setDigestType($dataArray['DigestType']->__toString());
+        }
+        if (isset($dataArray['DigestValue'])) {
+            $dataFileInfo->setDigestValue($dataArray['DigestValue']->__toString());
+        }
+        if (isset($dataArray['DfData'])) {
+            $dataFileInfo->setDfData($dataArray['DfData']->__toString());
+        } elseif (file_exists($file)) {
+            $dataFileInfo->setDfData(base64_encode(file_get_contents($file)));
+        }
+
+        // TODO: validate data
+
+        return $dataFileInfo;
     }
 }

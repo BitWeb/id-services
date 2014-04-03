@@ -32,8 +32,8 @@ chdir(dirname(dirname(__DIR__)));
 
 // Autoload classes
 include 'vendor/autoload.php';
-
-session_start();
+include 'init_autoloader.php';
+Zend\Mvc\Application::init(require 'config/application.config.php');
 
 $redirectUrl = urldecode($_GET["redirectUrl"]);
 
