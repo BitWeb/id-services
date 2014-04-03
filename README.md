@@ -30,16 +30,16 @@ use BitWeb\IdCard\Authentication\IdCardAuthentication;
 
 chdir(dirname(dirname(__DIR__)));
 
-// Setup autoloading
-include '../init_autoloader.php';
+// Autoload classes
+include 'vendor/autoload.php';
 
 session_start();
 
 $redirectUrl = urldecode($_GET["redirectUrl"]);
 
-if (!IdCardAuthentication::isSuccessful()){
+if (!IdCardAuthentication::isSuccessful()) {
     $redirectUrl = '/id-card/no-card-found';
-} else{
+} else {
     IdCardAuthentication::login();
 }
 $headerStr = 'Location: ' . $redirectUrl;
