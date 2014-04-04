@@ -5,7 +5,7 @@
     "homepage": "http://bitweb.ee/",
     "require": {
         "php": ">=5.3.3",
-        "zendframework/zend-soap": "2.3.*"
+        "zendframework/zend-soap": ">=2.2.2"
     },
     "repositories": [
         {
