@@ -88,7 +88,7 @@ class SignatureService
 
         try {
             $result = $this->soap->startSession("", "", true, $dataFile->toArray())['Sesscode'];
-            if ($result['Status'] === 'OK') {
+            if (is_int($result)) {
                 return $result;
             } else {
                 throw new SigningException($result['Status']);
