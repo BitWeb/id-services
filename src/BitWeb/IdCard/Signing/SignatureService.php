@@ -9,8 +9,6 @@ use Zend\Soap\Client;
 
 class SignatureService
 {
-    const DDOC_DOWNLOAD_ERROR = 'Error when downloading DDOC file.';
-
     protected $wsdl;
 
     /**
@@ -89,7 +87,12 @@ class SignatureService
         $dataFile->fillData($fileName, $fileOriginalName);
 
         try {
-            return $this->soap->startSession("", "", true, $dataFile->toArray())['Sesscode'];
+            $result = $this->soap->startSession("", "", true, $dataFile->toArray())['Sesscode'];
+            if ($result['Status'] === 'OK') {
+                return $result;
+            } else {
+                throw new SigningException($result['Status']);
+            }
         } catch (\SoapFault $e) {
             $this->catchSoapError($e);
         }
@@ -98,7 +101,12 @@ class SignatureService
     public function prepareSignature($sessionCode, $certificateId, $certificateHex)
     {
         try {
-            return $this->soap->prepareSignature($sessionCode, $certificateHex, $certificateId);
+            $result = $this->soap->prepareSignature($sessionCode, $certificateHex, $certificateId);
+            if ($result['Status'] === 'OK') {
+                return $result;
+            } else {
+                throw new SigningException($result['Status']);
+            }
         } catch (\SoapFault $e) {
             $this->catchSoapError($e);
         }
@@ -107,7 +115,12 @@ class SignatureService
     public function finalizeSignature($sessionCode, $signatureId, $signatureHex)
     {
         try {
-            return $this->soap->finalizeSignature($sessionCode, $signatureId, $signatureHex);
+            $result = $this->soap->finalizeSignature($sessionCode, $signatureId, $signatureHex);
+            if ($result['Status'] === 'OK') {
+                return $result;
+            } else {
+                throw new SigningException($result['Status']);
+            }
         } catch (\SoapFault $e) {
             $this->catchSoapError($e);
         }
@@ -118,9 +131,9 @@ class SignatureService
         try {
             $result = $this->soap->getSignedDoc($sessionCode);
             if ($result['Status'] === 'OK') {
-                return html_entity_decode($this->replaceDataFile($result['SignedDocData'], $signedFile));
+                return $this->replaceDataFile(html_entity_decode($result['SignedDocData']), $signedFile);
             } else {
-                throw new SigningException(self::DDOC_DOWNLOAD_ERROR);
+                throw new SigningException($result['Status']);
             }
         } catch (\SoapFault $e) {
             $this->catchSoapError($e);
@@ -130,7 +143,12 @@ class SignatureService
     public function getSignedDocInfo($sessionCode)
     {
         try {
-            return $this->soap->getSignedDocInfo($sessionCode);
+            $result = $this->soap->getSignedDocInfo($sessionCode);
+            if ($result['Status'] === 'OK') {
+                return $result;
+            } else {
+                throw new SigningException($result['Status']);
+            }
         } catch (\SoapFault $e) {
             $this->catchSoapError($e);
         }
@@ -145,6 +163,8 @@ class SignatureService
     protected function replaceDataFile($SignedDocData, $signedFile)
     {
         $data = simplexml_load_string($SignedDocData);
+
+        // TODO check that the file is the same file
 
         $old = dom_import_simplexml($data->DataFile);
         $new = DataFileInfo::formXml($data->DataFile->asXml(), $signedFile)->getDomElement();
