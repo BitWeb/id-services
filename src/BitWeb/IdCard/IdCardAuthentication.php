@@ -34,6 +34,10 @@ class IdCardAuthentication extends Authentication
 
         $cardInfo = explode('/', $_SERVER['SSL_CLIENT_S_DN']);
 
+        if(count($cardInfo) <= 1){
+            $cardInfo = explode(',', $_SERVER['SSL_CLIENT_S_DN']);
+        }
+
         $parameters = array();
         foreach ($cardInfo as $info) {
             if ($info != null) {
