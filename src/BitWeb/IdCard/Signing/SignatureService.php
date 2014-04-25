@@ -173,4 +173,102 @@ class SignatureService
 
         return $data->asXML();
     }
+    
+     public function closeSession($sessionId)
+    {
+        try {
+            $result = $this->soap->closeSession($sessionId);
+            if ($result === 'OK') {
+                return $result;
+            } else {
+                throw new SigningException($result['Status']);
+            }
+        } catch (\SoapFault $e) {
+            $this->catchSoapError($e);
+        }
+    }
+
+
+    public function getSignedDocInfoByPath( $documentPath )
+    {
+        $contents = file_get_contents($documentPath);
+        $contents = $this->prepareDdocDataFile($contents);
+
+        try {
+            $result = $this->soap->startSession("", $contents, true);
+            if (is_int($result['Sesscode'])) {
+                return $result['SignedDocInfo'];
+            } else {
+                throw new SigningException($result['Status']);
+            }
+        } catch (\SoapFault $e) {
+            $this->catchSoapError($e);
+        }
+    }
+
+    /*
+    *
+    */
+    public function startDdockSession($documentPath, $storePath)
+    {
+        if (!IdCardAuthentication::isUserLoggedIn()) {
+            IdCardAuthentication::login();
+        }
+
+        try {
+
+            $contents = file_get_contents($documentPath);
+            $contents = $this->prepareDdocDataFile($contents, $storePath);
+
+            $result = $this->soap->startSession("", $contents, true)['Sesscode'];
+            if (is_int($result)) {
+                return $result;
+            } else {
+                throw new SigningException($result['Status']);
+            }
+        } catch (\SoapFault $e) {
+            $this->catchSoapError($e);
+        }
+    }
+
+    public function prepareDdocDataFile($documentContents, $storePath = NULL)
+    {
+        $data = simplexml_load_string($documentContents);
+
+        if(!is_object($data->DataFile)){
+            return NULL;
+        }
+
+        $xml = simplexml_load_string( $data->DataFile->asXml() );
+
+        if($storePath){
+            file_put_contents($storePath, base64_decode((string)$xml));
+        }
+
+        $dataArray = $xml->attributes();
+        $doc = new \DOMDocument(null, 'UTF-8');
+        $dom = new \DOMElement('DataFile', "" . "\n", DataFileInfo::$xmlNamespace);
+
+        $doc->appendChild($dom);
+        $dom->setAttribute('namespace', DataFileInfo::$xmlNamespace);
+        $dom->setAttribute('ContentType', DataFileInfo::CONTENT_TYPE_HASH_CODE);
+        $dom->setAttribute('Filename',$dataArray['Filename']->__toString());
+        $dom->setAttribute('Id',$dataArray['Id']->__toString());
+        $dom->setAttribute('MimeType',$dataArray['MimeType']->__toString());
+        $dom->setAttribute('Size',$dataArray['Size']->__toString());
+        $dom->setAttribute('DigestType', DataFileInfo::DIGEST_TYPE_SHA1);
+
+        $encoded = hash(DataFileInfo::DIGEST_TYPE_SHA1, $dom->C14N(false, false));
+        $digestValue = base64_encode(pack('H*', $encoded));
+
+        $dom->setAttribute('DigestValue', $digestValue);
+        $old = dom_import_simplexml($data->DataFile);
+        $nodeImport = $old->ownerDocument->importNode($dom, true);
+        $old->parentNode->replaceChild($nodeImport, $old);
+        $dataString = $data->asXML();
+        $dataString = str_replace('namespace','xmlns', $dataString);
+
+        return $dataString;
+    }
+    
 }
