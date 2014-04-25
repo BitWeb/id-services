@@ -204,6 +204,7 @@ class DataFileInfo
 
     public function fillData($fileName, $fileDisplayName = null)
     {
+        $this->setDfData(base64_encode(file_get_contents($fileName)));
         $this->setFilename($fileDisplayName === null ? basename($fileName) : $fileDisplayName);
         $this->setContentType(self::CONTENT_TYPE_HASH_CODE);
         $this->setMimeType(DataFileInfo::detectMimeType($fileName));
