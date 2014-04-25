@@ -233,7 +233,7 @@ class SignatureService
 
     public function prepareDdocDataFile($documentContents, $storePath = NULL)
     {
-        $data = simplexml_load_string($documentContents);
+                $data = simplexml_load_string($documentContents);
 
         if(!is_object($data->DataFile)){
             return NULL;
@@ -257,17 +257,15 @@ class SignatureService
         $dom->setAttribute('MimeType',$dataArray['MimeType']->__toString());
         $dom->setAttribute('Size',$dataArray['Size']->__toString());
         $dom->setAttribute('DigestType', DataFileInfo::DIGEST_TYPE_SHA1);
-
-        $encoded = hash(DataFileInfo::DIGEST_TYPE_SHA1, $dom->C14N(false, false));
+        $dataFile = dom_import_simplexml($data->DataFile)->C14N(false, false);
+        $encoded = hash(DataFileInfo::DIGEST_TYPE_SHA1, $dataFile);
         $digestValue = base64_encode(pack('H*', $encoded));
-
         $dom->setAttribute('DigestValue', $digestValue);
         $old = dom_import_simplexml($data->DataFile);
         $nodeImport = $old->ownerDocument->importNode($dom, true);
         $old->parentNode->replaceChild($nodeImport, $old);
         $dataString = $data->asXML();
         $dataString = str_replace('namespace','xmlns', $dataString);
-
         return $dataString;
     }
     
