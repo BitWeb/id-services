@@ -269,4 +269,18 @@ class SignatureService
         return $dataString;
     }
     
+    
+    public function removeSignature( $sessionId, $signatureId )
+    {
+        try {
+            $result = $this->soap->removeSignature($sessionId, $signatureId);
+            if ($result['Status'] === 'OK') {
+                return $result['SignedDocInfo'];
+            } else {
+                throw new SigningException($result['Status']);
+            }
+        } catch (\SoapFault $e) {
+            $this->catchSoapError($e);
+        }
+    }
 }
