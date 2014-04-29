@@ -29,7 +29,7 @@ class IdCardAuthentication extends Authentication
 
         $cardInfo = explode('/', $_SERVER['SSL_CLIENT_S_DN']);
 
-        if(count($cardInfo) <= 1 ){
+        if(count($cardInfo) <= 1){
             $cardInfo = explode(',', $_SERVER['SSL_CLIENT_S_DN']);
         }
 
