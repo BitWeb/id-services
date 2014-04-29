@@ -10,14 +10,14 @@ BitWeb plugin for Id Card authentication ang signing.
 #### Adding lib
 ```sh
 php composer.phar require bitweb/id-card
-# (When asked for a version, type `1.*`)
+# (When asked for a version, type `2.0.*`)
 ```
 
 or add following to composer.json
 
 ```json
 "require": {
-  "bitweb/id-card": "dev-signing"
+  "bitweb/id-card": "2.0.*"
 }
 ```
 
