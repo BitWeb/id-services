@@ -1,10 +1,11 @@
 {
     "name": "bitweb/id-card",
-    "description": "BitWeb extension for Estonian ID-Card authentication.",
+    "description": "BitWeb extension for Estonian ID-Card authentication and signing.",
     "license": "proprietary",
     "homepage": "http://bitweb.ee/",
     "require": {
-        "php": ">=5.3.3"
+        "php": ">=5.3.3",
+        "zendframework/zend-soap": ">=2.2.2"
     },
     "repositories": [
         {

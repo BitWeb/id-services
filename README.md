@@ -17,7 +17,7 @@ or add following to composer.json
 
 ```json
 "require": {
-  "bitweb/id-card": "1.*"
+  "bitweb/id-card": "dev-signing"
 }
 ```
 
@@ -26,22 +26,21 @@ or add following to composer.json
 ##### Add id-card folder into your public folder
 ##### The folder should contain index.php with following contents:
 ```php
-use BitWeb\IdCard\IdCardAuthentication;
-chdir(dirname(__DIR__));
+use BitWeb\IdCard\Authentication\IdCardAuthentication;
 
-// Setup autoloading
-include '../init_autoloader.php';
+chdir(dirname(dirname(__DIR__)));
 
-session_start();
+// Autoload classes
+include 'vendor/autoload.php';
+include 'init_autoloader.php';
+Zend\Mvc\Application::init(require 'config/application.config.php');
 
 $redirectUrl = urldecode($_GET["redirectUrl"]);
 
-$auth = new IdCardAuthentication();
-if (!$auth->isSuccessful()){
-	$redirectUrl = '/id-card/no-card-found';
-}
-else{
- 	$_SESSION['idCardUser'] = serialize($auth->getUser());
+if (!IdCardAuthentication::isSuccessful()) {
+    $redirectUrl = '/id-card/no-card-found';
+} else {
+    IdCardAuthentication::login();
 }
 $headerStr = 'Location: ' . $redirectUrl;
 
