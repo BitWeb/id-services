@@ -21,11 +21,11 @@ class SigningTest extends \PHPUnit_Framework_TestCase
 
     protected function getConfig()
     {
-        if (is_file('../test/BitWeb/IdCardTest/TestAsset/config.php')) {
-            return include '../test/BitWeb/IdCardTest/TestAsset/config.php';
+        if (is_file('test/BitWeb/IdCardTest/TestAsset/config.php')) {
+            return include 'test/BitWeb/IdCardTest/TestAsset/config.php';
         }
 
-        return include '../test/BitWeb/IdCardTest/TestAsset/config.dist.php';
+        return include 'test/BitWeb/IdCardTest/TestAsset/config.dist.php';
     }
 
     public function testSigningProcess()
