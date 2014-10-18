@@ -76,7 +76,7 @@ class SignatureService
 
         // workaround for PHP5.6
         if (version_compare(PHP_VERSION, '5.6.0') !== -1) {
-            $options['stream-context'] = stream_context_create(
+            $options['stream_context'] = stream_context_create(
                 [
                     'ssl' => [
                         'verify_peer'       => false,
