@@ -94,6 +94,7 @@ class SignatureService
                 throw new SigningException($result['Status']);
             }
         } catch (\SoapFault $e) {
+            var_dump($e);
             $this->catchSoapError($e);
         }
     }
@@ -173,7 +174,7 @@ class SignatureService
 
         return $data->asXML();
     }
-    
+
      public function closeSession($sessionId)
     {
         try {
@@ -206,9 +207,6 @@ class SignatureService
         }
     }
 
-    /*
-    *
-    */
     public function startDdockSession($documentPath, $storePath)
     {
         if (!IdCardAuthentication::isUserLoggedIn()) {
@@ -268,8 +266,7 @@ class SignatureService
         $dataString = str_replace('namespace','xmlns', $dataString);
         return $dataString;
     }
-    
-    
+
     public function removeSignature( $sessionId, $signatureId )
     {
         try {
