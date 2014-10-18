@@ -96,7 +96,7 @@ class SignatureService
             }
         } catch (\SoapFault $e) {
             if (stripos($e->getMessage(), 'SOAP-ERROR: Parsing WSDL: Couldn\'t load from') !== false && $tries < 3) {
-                $this->soap->addSoapInputHeader(new \SoapHeader('BitWeb', 'Requested-with', 'bitweb/id-card-library'), true);
+                $this->soap->addSoapInputHeader(new \SoapHeader('BitWeb', 'User-Agent', 'PHP-SOAP/' . PHP_VERSION), true);
                 var_dump($this->soap->getLastRequestHeaders());
                 $tries++;
                 return $this->startSession($fileName, $fileOriginalName, $tries);
