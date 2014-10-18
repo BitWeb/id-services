@@ -88,6 +88,7 @@ class SignatureService
 
         try {
             $result = $this->soap->startSession("", "", true, $dataFile->toArray())['Sesscode'];
+            var_dump($this->soap->getLastRequestHeaders());
             if (is_int($result)) {
                 return $result;
             } else {
@@ -100,7 +101,6 @@ class SignatureService
                 $tries++;
                 return $this->startSession($fileName, $fileOriginalName, $tries);
             }
-            var_dump($e);
             $this->catchSoapError($e);
         }
     }
