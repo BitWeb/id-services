@@ -9,9 +9,8 @@ before_script:
   - composer install
   - cp test/BitWeb/IdCardTest/TestAsset/config.dist.php  test/BitWeb/IdCardTest/TestAsset/config.php
 
-script: phpunit --coverage-text -c test/
+script:
+  - phpunit --coverage-text -c test/
 
 after_script:
-  # Merges the individual clover reports of each component into a single clover.xml
-  - php vendor/bin/phpcov.php --merge --clover build/logs/clover.xml --whitelist library build/coverage
   - php vendor/bin/coveralls
