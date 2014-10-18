@@ -8,7 +8,6 @@ before_script:
   - composer self-update
   - composer install
   - cp test/BitWeb/IdCardTest/TestAsset/config.dist.php  test/BitWeb/IdCardTest/TestAsset/config.php
-  - php -m
 
 script: phpunit --coverage-text -c test/
 
