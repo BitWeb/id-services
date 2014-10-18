@@ -16,12 +16,16 @@ class SigningTest extends \PHPUnit_Framework_TestCase
 
     protected function setUserAuthInfo()
     {
-        $_SERVER['SSL_CLIENT_S_DN'] = $this->getConfig()['authenticate']['info'];
+        $_SERVER[IdCardAuthentication::SSL_CLIENT] = $this->getConfig()['authenticate']['info'];
     }
 
     protected function getConfig()
     {
-        return include 'test/BitWeb/IdCardTest/TestAsset/config.php';
+        if (is_file('../test/BitWeb/IdCardTest/TestAsset/config.php')) {
+            return include '../test/BitWeb/IdCardTest/TestAsset/config.php';
+        }
+
+        return include '../test/BitWeb/IdCardTest/TestAsset/config.dist.php';
     }
 
     public function testSigningProcess()
@@ -48,4 +52,4 @@ class SigningTest extends \PHPUnit_Framework_TestCase
         //finalize
         $info2 = $service->finalizeSignature($sessionCode, $info['SignatureId'], $this->getConfig()['signature']['hex']);
     }
-} 
+}

@@ -7,7 +7,7 @@ use BitWeb\IdCard\Signing\SignatureService;
 
 class SignatureServiceTest extends \PHPUnit_Framework_TestCase
 {
-    public $testFileName = 'test/BitWeb/IdCardTest/TestAsset/test.txt';
+    public $testFileName = '../test/BitWeb/IdCardTest/TestAsset/test.txt';
 
     protected function setSuccess()
     {
@@ -28,6 +28,7 @@ class SignatureServiceTest extends \PHPUnit_Framework_TestCase
         $service = new SignatureService();
         $service->setWsdl();
         $service->initSoap();
+        //var_dump(scandir('../'));
         $this->assertTrue(is_int($service->startSession($this->testFileName)));
         $this->assertEquals('https://www.openxades.org:9443/?wsdl', $service->getWsdl());
     }
@@ -42,4 +43,4 @@ class SignatureServiceTest extends \PHPUnit_Framework_TestCase
         $service->initSoap();
         $this->assertTrue(is_int($service->startSession($this->testFileName)));
     }
-} 
+}
