@@ -77,7 +77,7 @@ class SignatureService
         return $this;
     }
 
-    public function startSession($fileName, $fileOriginalName = null, $tries = 0)
+    public function startSession($fileName, $fileOriginalName = null)
     {
         if (!IdCardAuthentication::isUserLoggedIn()) {
             IdCardAuthentication::login();
@@ -88,19 +88,12 @@ class SignatureService
 
         try {
             $result = $this->soap->startSession("", "", true, $dataFile->toArray())['Sesscode'];
-            var_dump($this->soap->getLastRequestHeaders());
             if (is_int($result)) {
                 return $result;
             } else {
                 throw new SigningException($result['Status']);
             }
         } catch (\SoapFault $e) {
-            if (stripos($e->getMessage(), 'SOAP-ERROR: Parsing WSDL: Couldn\'t load from') !== false && $tries < 3) {
-                $this->soap->addSoapInputHeader(new \SoapHeader($this->wsdl, 'User-Agent', 'PHP-SOAP/' . PHP_VERSION), true);
-                var_dump($this->soap->getLastRequestHeaders());
-                $tries++;
-                return $this->startSession($fileName, $fileOriginalName, $tries);
-            }
             $this->catchSoapError($e);
         }
     }
