@@ -11,7 +11,7 @@ namespace BitWeb\IdCard\Authentication;
  */
 class IdCardAuthentication extends Authentication
 {
-
+    const SSL_CLIENT = 'SSL_CLIENT_S_DN';
     const SSL_CLIENT_VERIFY = 'SSL_CLIENT_VERIFY';
     const SSL_CLIENT_VERIFY_SUCCESSFUL = 'SUCCESS';
     const ID_CARD_USER_AUTH_SESSION_KEY = 'idCardAuth';
@@ -27,10 +27,10 @@ class IdCardAuthentication extends Authentication
             throw new AuthenticationException('User not authenticated!');
         }
 
-        $cardInfo = explode('/', $_SERVER['SSL_CLIENT_S_DN']);
+        $cardInfo = explode('/', $_SERVER[self::SSL_CLIENT]);
 
         if(count($cardInfo) <= 1){
-            $cardInfo = explode(',', $_SERVER['SSL_CLIENT_S_DN']);
+            $cardInfo = explode(',', $_SERVER[self::SSL_CLIENT]);
         }
 
         $parameters = array();
