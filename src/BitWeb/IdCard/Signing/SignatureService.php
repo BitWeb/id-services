@@ -77,7 +77,7 @@ class SignatureService
         return $this;
     }
 
-    public function startSession($fileName, $fileOriginalName = null)
+    public function startSession($fileName, $fileOriginalName = null, $tries = 0)
     {
         if (!IdCardAuthentication::isUserLoggedIn()) {
             IdCardAuthentication::login();
@@ -94,11 +94,12 @@ class SignatureService
                 throw new SigningException($result['Status']);
             }
         } catch (\SoapFault $e) {
-            if (stripos($e->getMessage(), 'SOAP-ERROR: Parsing WSDL: Couldn\'t load from') !== false) {
+            if (stripos($e->getMessage(), 'SOAP-ERROR: Parsing WSDL: Couldn\'t load from') !== false && $tries < 3) {
                 $this->soap->addSoapInputHeader(new \SoapHeader('BitWeb', 'Requested-with', 'bitweb/id-card-library'), true);
-                return $this->startSession($fileName, $fileOriginalName);
+                var_dump($this->soap->getLastRequestHeaders());
+                $tries++;
+                //return $this->startSession($fileName, $fileOriginalName, $tries);
             }
-            var_dump($e);
             $this->catchSoapError($e);
         }
     }
