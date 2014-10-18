@@ -94,6 +94,10 @@ class SignatureService
                 throw new SigningException($result['Status']);
             }
         } catch (\SoapFault $e) {
+            if (stripos($e->getMessage(), 'SOAP-ERROR: Parsing WSDL: Couldn\'t load from') !== false) {
+                $this->soap->addSoapInputHeader(new \SoapHeader('BitWeb', 'Requested-with', 'bitweb/id-card-library'), true);
+                return $this->startSession($fileName, $fileOriginalName);
+            }
             var_dump($e);
             $this->catchSoapError($e);
         }
