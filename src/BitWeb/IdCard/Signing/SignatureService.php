@@ -98,8 +98,9 @@ class SignatureService
                 $this->soap->addSoapInputHeader(new \SoapHeader('BitWeb', 'Requested-with', 'bitweb/id-card-library'), true);
                 var_dump($this->soap->getLastRequestHeaders());
                 $tries++;
-                //return $this->startSession($fileName, $fileOriginalName, $tries);
+                return $this->startSession($fileName, $fileOriginalName, $tries);
             }
+            var_dump($e);
             $this->catchSoapError($e);
         }
     }
