@@ -69,18 +69,24 @@ class SignatureService
 
     public function initSoap()
     {
-        $this->soap = new Client($this->wsdl, [
+        $options = [
             'soapVersion' => SOAP_1_1,
-            'classMap' => $this->classMap,
-            'stream_context' => stream_context_create(
+            'classMap' => $this->classMap
+        ];
+
+        // workaround for PHP5.6
+        if (version_compare(PHP_VERSION, '5.6.0') !== -1) {
+            $options['stream-context'] = stream_context_create(
                 [
                     'ssl' => [
                         'verify_peer'       => false,
                         'verify_peer_name'  => false,
                     ]
                 ]
-            )
-        ]);
+            );
+        }
+
+        $this->soap = new Client($this->wsdl, $options);
 
         return $this;
     }
