@@ -1,11 +1,25 @@
 {
-    "name": "bitweb/id-card",
-    "description": "BitWeb extension for Estonian ID-Card authentication and signing.",
+    "name": "bitweb/id-services",
+    "description": "BitWeb extension for Estonian ID-Card and Mobile ID authentication and signing.",
     "license": "proprietary",
     "homepage": "http://bitweb.ee/",
+    "authors": [
+        {
+            "name": "Rain Ramm",
+            "email": "rain@bitweb.ee"
+        },
+        {
+            "name": "Tõnis Tobre",
+            "email": "tobre@bitweb.ee"
+        },
+        {
+            "name": "Priit Rand",
+            "email": "priit@bitweb.ee"
+        }
+    ],
     "require": {
         "php": ">=5.3.3",
-        "zendframework/zend-soap": ">=2.2.2"
+        "zendframework/zend-soap": ">=2.3.1"
     },
     "repositories": [
         {

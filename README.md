@@ -1,6 +1,6 @@
 id-card
 =======
-[![Build Status](https://travis-ci.org/BitWeb/id-card.png?branch=master)](https://travis-ci.org/BitWeb/id-card)
+[![Build Status](https://travis-ci.org/BitWeb/id-services.svg?branch=master)](https://travis-ci.org/BitWeb/id-services)
 [![Coverage Status](https://coveralls.io/repos/BitWeb/id-card/badge.png?branch=master)](https://coveralls.io/r/BitWeb/id-card?branch=master)
 
 BitWeb plugin for Id Card authentication ang signing.
@@ -9,15 +9,15 @@ BitWeb plugin for Id Card authentication ang signing.
 
 #### Adding lib
 ```sh
-php composer.phar require bitweb/id-card
-# (When asked for a version, type `2.0.*`)
+php composer.phar require bitweb/id-services
+# (When asked for a version, type `1.0.*`)
 ```
 
 or add following to composer.json
 
 ```json
 "require": {
-  "bitweb/id-card": "2.0.*"
+  "bitweb/id-services": "1.0.*"
 }
 ```
 
