@@ -8,7 +8,7 @@ use BitWeb\IdServices\Signing\IdCard\SignatureService;
 
 class SignatureServiceTest extends \PHPUnit_Framework_TestCase
 {
-    public $testFileName = 'test/BitWeb/IdServicesTest/TestAsset/test.txt';
+    public $testFileName = 'test/TestAsset/test.txt';
 
     protected function setSuccess()
     {

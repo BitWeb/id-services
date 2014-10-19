@@ -7,7 +7,7 @@ use BitWeb\IdServices\Signing\IdCard\SignatureService;
 
 class SigningTest extends \PHPUnit_Framework_TestCase
 {
-    public $testFileName = 'test/BitWeb/IdServicesTest/TestAsset/test.txt';
+    public $testFileName = 'test/TestAsset/test.txt';
 
     protected function setSuccess()
     {
@@ -21,11 +21,11 @@ class SigningTest extends \PHPUnit_Framework_TestCase
 
     protected function getConfig()
     {
-        if (is_file('test/BitWeb/IdServicesTest/TestAsset/config.php')) {
-            return include 'test/BitWeb/IdServicesTest/TestAsset/config.php';
+        if (is_file('test/TestAsset/config.php')) {
+            return include 'test/TestAsset/config.php';
         }
 
-        return include 'test/BitWeb/IdServicesTest/TestAsset/config.dist.php';
+        return include 'test/TestAsset/config.dist.php';
     }
 
     public function testSigningProcess()
