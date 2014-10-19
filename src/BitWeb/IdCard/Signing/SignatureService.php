@@ -2,38 +2,14 @@
 
 namespace BitWeb\IdCard\Signing;
 
+use BitWeb\IdCard\AbstractService;
 use BitWeb\IdCard\Authentication\IdCardAuthentication;
 use BitWeb\IdCard\Signing\Exception\ServiceException;
 use BitWeb\IdCard\Signing\Exception\SigningException;
 use Zend\Soap\Client;
 
-class SignatureService
+class SignatureService extends AbstractService
 {
-    protected $wsdl;
-
-    /**
-     * Error codes translated according to http://www.sk.ee/upload/files/DigiDocService_spec_est.pdf version 2.127
-     *
-     * @var array
-     */
-    protected $errorCodeMap = [
-        '100' => ServiceException::ERROR_CODE_100,
-        '101' => ServiceException::ERROR_CODE_101,
-        '102' => ServiceException::ERROR_CODE_102,
-        '103' => ServiceException::ERROR_CODE_103,
-        '200' => ServiceException::ERROR_CODE_200,
-        '201' => ServiceException::ERROR_CODE_201,
-        '202' => ServiceException::ERROR_CODE_202,
-        '203' => ServiceException::ERROR_CODE_203,
-        '300' => ServiceException::ERROR_CODE_300,
-        '301' => ServiceException::ERROR_CODE_301,
-        '302' => ServiceException::ERROR_CODE_302,
-        '303' => ServiceException::ERROR_CODE_303,
-        '304' => ServiceException::ERROR_CODE_304,
-        '305' => ServiceException::ERROR_CODE_305,
-        '413' => ServiceException::ERROR_CODE_413,
-        '503' => ServiceException::ERROR_CODE_503
-    ];
 
     protected $classMap = [
         'CertificateInfo'           => Certificate\Info::class,
@@ -49,47 +25,6 @@ class SignatureService
         'SignerInfo'                => Signer\Info::class,
         'SignerRole'                => Signer\Role::class,
     ];
-
-    /**
-     * @var Client
-     */
-    protected $soap;
-
-    public function setWsdl($wsdl = 'https://www.openxades.org:9443/?wsdl')
-    {
-        $this->wsdl = $wsdl;
-
-        return $this;
-    }
-
-    public function getWsdl()
-    {
-        return $this->wsdl;
-    }
-
-    public function initSoap()
-    {
-        $options = [
-            'soapVersion' => SOAP_1_1,
-            'classMap' => $this->classMap
-        ];
-
-        // workaround for PHP5.6
-        if (version_compare(PHP_VERSION, '5.6.0') !== -1) {
-            $options['stream_context'] = stream_context_create(
-                [
-                    'ssl' => [
-                        'verify_peer'       => false,
-                        'verify_peer_name'  => false,
-                    ]
-                ]
-            );
-        }
-
-        $this->soap = new Client($this->wsdl, $options);
-
-        return $this;
-    }
 
     public function startSession($fileName, $fileOriginalName = null)
     {
@@ -171,7 +106,7 @@ class SignatureService
     protected function catchSoapError(\SoapFault $e)
     {
         $code = $e->getMessage();
-        throw new ServiceException($this->errorCodeMap[$code], $code);
+        throw new ServiceException(ServiceException::$errorCodeMap[$code], $code);
     }
 
     protected function replaceDataFile($SignedDocData, $signedFile)
@@ -188,7 +123,7 @@ class SignatureService
         return $data->asXML();
     }
 
-     public function closeSession($sessionId)
+    public function closeSession($sessionId)
     {
         try {
             $result = $this->soap->closeSession($sessionId);
@@ -244,7 +179,7 @@ class SignatureService
 
     public function prepareDdocDataFile($documentContents, $storePath = NULL)
     {
-                $data = simplexml_load_string($documentContents);
+        $data = simplexml_load_string($documentContents);
 
         if(!is_object($data->DataFile)){
             return NULL;
