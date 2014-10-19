@@ -1,7 +1,7 @@
 id-card
 =======
 [![Build Status](https://travis-ci.org/BitWeb/id-services.svg?branch=master)](https://travis-ci.org/BitWeb/id-services)
-[![Coverage Status](https://coveralls.io/repos/BitWeb/id-card/badge.png?branch=master)](https://coveralls.io/r/BitWeb/id-card?branch=master)
+[![Coverage Status](https://img.shields.io/coveralls/BitWeb/id-services.svg)](https://coveralls.io/r/BitWeb/id-services?branch=master)
 
 BitWeb plugin for Id Card authentication ang signing.
 

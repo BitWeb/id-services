@@ -1,7 +1,20 @@
 {
     "name": "bitweb/id-services",
     "description": "BitWeb extension for Estonian ID-Card and Mobile ID authentication and signing.",
-    "license": "proprietary",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "authentication",
+        "signing",
+        "mobile-id",
+        "mobile id",
+        "id-card",
+        "id card",
+        "autentimine",
+        "allkirjastamine",
+        "mobiil id",
+        "mobiilID",
+        "ID kaart"
+    ],
     "homepage": "http://bitweb.ee/",
     "authors": [
         {
@@ -20,6 +33,17 @@
     "require": {
         "php": ">=5.3.3",
         "zendframework/zend-soap": ">=2.3.1"
+    },
+    "require-dev": {
+        "phpunit/PHPUnit": "3.7.*",
+        "satooshi/php-coveralls": "dev-master",
+        "sebastianbergmann/phpcov": "1.1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "BitWeb\\IdServices\\": "src/",
+            "BitWeb\\IdServicesTest\\": "test/"
+        }
     },
     "repositories": [
         {
@@ -41,16 +65,5 @@
                 ]
             }
         }
-    ],
-    "require-dev": {
-        "phpunit/PHPUnit": "3.7.*",
-        "satooshi/php-coveralls": "dev-master",
-        "sebastianbergmann/phpcov": "1.1.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "BitWeb\\IdServices\\": "src/",
-            "BitWeb\\IdServicesTest\\": "test/"
-        }
-    }
+    ]
 }
