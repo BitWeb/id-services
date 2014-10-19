@@ -38,10 +38,6 @@ class AbstractService
 
     public function initSoap()
     {
-        if ([] === $this->classMap) {
-            throw new ServiceException('No class map provided.');
-        }
-
         if (null === $this->wsdl) {
             throw new ServiceException('No WSDL URL provided.');
         }

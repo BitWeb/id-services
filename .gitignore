@@ -1,3 +1,4 @@
 /vendor
 /.idea
-test/BitWeb/IdCardTest/TestAsset/config.php
+test/TestAsset/config.php
+/build
