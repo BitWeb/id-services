@@ -6,6 +6,7 @@ use BitWeb\IdServices\AbstractService;
 use BitWeb\IdServices\Authentication\Exception\AuthenticationException;
 use BitWeb\IdServices\Authentication\Exception\ValidationException;
 use BitWeb\IdServices\Exception\ServiceException;
+use Zend\Log\Logger;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
 class AuthenticationService extends AbstractService
@@ -37,14 +38,16 @@ class AuthenticationService extends AbstractService
      */
     public function mobileAuthenticate($personalCode, $phoneNumber, $language, $serviceName, $displayMessage)
     {
+        $this->log(Logger::INFO, '')->log(Logger::INFO, 'SOAP::MobileAuthenticate start validation');
         $this->validatePersonalCode($personalCode);
         $this->validatePhoneNumber($phoneNumber);
         $this->validateLanguage($language);
         $this->validateServiceName($serviceName);
         $this->validateDisplayMessage($displayMessage);
+        $this->log(Logger::INFO, 'SOAP::MobileAuthenticate input validation finished');
 
         try {
-            $result = $this->soap->call('MobileAuthenticate', [
+            $data = [
                 'IDCode'           => $personalCode,
                 'CountryCode'      => self::COUNTRY_CODE_ESTONIA,
                 'PhoneNo'          => $phoneNumber,
@@ -53,17 +56,28 @@ class AuthenticationService extends AbstractService
                 'MessageToDisplay' => $displayMessage,
                 'SPChallenge'      => $this->generateRandomNumbers(20),
                 'MessagingMode'    => 'asynchClientServer'
-            ]);
+            ];
 
-            if (array_key_exists('Status', $result) && in_array($result['Status'], ['OK', 'USER_AUTHENTICATED'])) {
+            $this->log(Logger::INFO, 'SOAP::MobileAuthenticate request: ' . serialize($data));
+            $result = $this->soap->call('MobileAuthenticate', $data);
+            $this->log(Logger::INFO, 'SOAP::MobileAuthenticate response status ' . serialize($result));
+
+            $status = $result['Status'];
+            if (in_array($status, ['OK', 'USER_AUTHENTICATED'])) {
                 return $this->getHydrator()->hydrate($result, new AuthenticateResponse());
             } else {
-                throw new AuthenticationException($result['Status']);
+                throw new AuthenticationException($status);
             }
         } catch (\SoapFault $e) {
+            $this->log(Logger::ERR, 'SOAP::MobileAuthenticate exception: ' . $e->getMessage());
             throw $this->soapError($e);
         } catch (\Exception $e) {
-            throw new AuthenticationException('Unknown exception has occurred.', null, $e);
+            $this->log(Logger::ERR, 'SOAP::MobileAuthenticate exception: ' . $e->getMessage());
+            if (!$e instanceof AuthenticationException) {
+                throw new AuthenticationException('Unknown exception has occurred.', null, $e);
+            }
+
+            throw $e;
         }
     }
 
@@ -77,20 +91,28 @@ class AuthenticationService extends AbstractService
      */
     public function getMobileAuthenticateStatus($sessionCode, $waitSignature)
     {
+        $this->log(Logger::INFO, '')->log(Logger::INFO, 'SOAP::GetMobileAuthenticateStatus start validation');
         if (!is_bool($waitSignature)) {
             throw ValidationException::invalidValue('WaitSignature', is_object($waitSignature) ? get_class($waitSignature) : gettype($waitSignature), 'boolean');
         }
+        $this->log(Logger::INFO, 'SOAP::GetMobileAuthenticateStatus input validation finished');
 
         try {
-            $result = $this->soap->call('GetMobileAuthenticateStatus', [
-                'SessCode'      => $sessionCode,
+            $data = [
+                'Sesscode'      => $sessionCode,
                 'WaitSignature' => $waitSignature
-            ]);
+            ];
+
+            $this->log(Logger::INFO, 'SOAP::GetMobileAuthenticateStatus request: ' . serialize($data));
+            $result = $this->soap->call('GetMobileAuthenticateStatus', $data);
+            $this->log(Logger::INFO, 'SOAP::GetMobileAuthenticateStatus response: ' . serialize($result));
 
             return $this->getHydrator()->hydrate($result, new AuthenticateStatusResponse());
         } catch (\SoapFault $e) {
+            $this->log(Logger::ERR, 'SOAP::GetMobileAuthenticateStatus exception: ' . $e->getMessage());
             throw $this->soapError($e);
         } catch (\Exception $e) {
+            $this->log(Logger::ERR, 'SOAP::GetMobileAuthenticateStatus exception: ' . $e->getMessage());
             throw new AuthenticationException('Unknown exception has occurred.', null, $e);
         }
     }

@@ -3,6 +3,8 @@
 namespace BitWeb\IdServices;
 
 use BitWeb\IdServices\Exception\ServiceException;
+use Zend\Log\Logger;
+use Zend\Log\Writer\Stream;
 use Zend\Soap\Client;
 
 class AbstractService
@@ -24,8 +26,17 @@ class AbstractService
      */
     protected $soap;
 
-    public function setWsdl($wsdl = 'https://www.openxades.org:9443/?wsdl')
+    /**
+     * @var Logger
+     */
+    protected $logger;
+
+    public function setWsdl($wsdl = null)
     {
+        if ($wsdl === null) {
+            $wsdl = 'https://www.openxades.org:9443/?wsdl';
+        }
+
         $this->wsdl = $wsdl;
 
         return $this;
@@ -71,5 +82,22 @@ class AbstractService
     protected function soapError(\SoapFault $e)
     {
         return ServiceException::soapFault($e);
+    }
+
+    public function enableLogging($fileName)
+    {
+        $this->logger = new Logger();
+        $this->logger->addWriter(new Stream($fileName, 'a+'));
+
+        return $this;
+    }
+
+    protected function log($priority, $message)
+    {
+        if ($this->logger !== null) {
+            $this->logger->log($priority, $message);
+        }
+
+        return $this;
     }
 }

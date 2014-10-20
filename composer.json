@@ -33,7 +33,8 @@
     "require": {
         "php": ">=5.3.3",
         "zendframework/zend-soap": "~2.3.1",
-        "zendframework/zend-stdlib": "~2.3.1"
+        "zendframework/zend-stdlib": "~2.3.1",
+        "zendframework/zend-log": "~2.3.1"
     },
     "require-dev": {
         "phpunit/PHPUnit": "3.7.*",
