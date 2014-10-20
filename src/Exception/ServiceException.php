@@ -50,7 +50,7 @@ class ServiceException extends IdServicesException
         $code = $e->getMessage();
 
         // fix undefined index error in HHVM
-        if (!in_array($code, static::$errorCodeMap)) {
+        if (!in_array($code, array_keys(static::$errorCodeMap))) {
             $xml = $e->getMessage();
             $faultString = '<faultstring xml:lang="en">';
 
