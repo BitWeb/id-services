@@ -51,6 +51,8 @@ class ServiceException extends IdServicesException
 
         if (!in_array($code, static::$errorCodeMap)) {
             var_dump($e->getMessage());
+            var_dump($e->getCode());
+            var_dump($e->getPrevious());
         }
 
         if (!in_array($code, static::$errorCodeMap) && in_array((string)$e->getCode(), static::$errorCodeMap)) {
