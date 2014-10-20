@@ -38,4 +38,11 @@ class ValidationException extends AuthenticationException
             sprintf('Expected display message to be maximum of %s bytes, got %s.', $maxLength, $length)
         );
     }
+
+    public static function invalidValue($argumentName, $got, $expected)
+    {
+        return new static(
+            sprintf('Expected argument "%s" to be type of "%s", got "%".', $argumentName, $expected, $got)
+        );
+    }
 }

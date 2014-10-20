@@ -3,8 +3,8 @@
 namespace BitWeb\IdServicesTest\Authentication\MobileID;
 
 use BitWeb\IdServices\Authentication\MobileID\AuthenticateResponse;
+use BitWeb\IdServices\Authentication\MobileID\AuthenticateStatusResponse;
 use BitWeb\IdServices\Authentication\MobileID\AuthenticationService;
-use BitWeb\IdServices\Exception\ServiceException;
 
 class AuthenticationServiceTest extends \PHPUnit_Framework_TestCase
 {
@@ -32,27 +32,35 @@ class AuthenticationServiceTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \BitWeb\IdServices\Exception\ServiceException
+     * @expectedExceptionCode 303
      */
     public function testMobileAuthenticationFailOnMobileIDNotActivated()
     {
-        try {
-            $this->service->mobileAuthenticate('38002240211', '+37200001', 'EST', 'Testimine', 'Testimine');
-        } catch (ServiceException $e) {
-            $this->assertEquals(303, $e->getCode());
-            throw $e;
-        }
+        $this->service->mobileAuthenticate('38002240211', '+37200001', 'EST', 'Testimine', 'Testimine');
     }
 
     /**
      * @expectedException \BitWeb\IdServices\Exception\ServiceException
+     * @expectedExceptionCode 302
      */
     public function testMobileAuthenticationFailOnCertificatesRevoked()
     {
-        try {
-            $this->service->mobileAuthenticate('14212128027', '+37200009', 'EST', 'Testimine', 'Testimine');
-        } catch (ServiceException $e) {
-            $this->assertEquals(302, $e->getCode());
-            throw $e;
-        }
+        $this->service->mobileAuthenticate('14212128027', '+37200009', 'EST', 'Testimine', 'Testimine');
+    }
+
+    public function testGetMobileAuthenticateStatusSuccess()
+    {
+        $response = $this->service->mobileAuthenticate('51001091072', '+37260000007', 'EST', 'Testimine', 'Testimine');
+
+        $this->assertInstanceOf(AuthenticateStatusResponse::class, $this->service->getMobileAuthenticateStatus($response->getSessCode(), false));
+    }
+
+    /**
+     * @expectedException \BitWeb\IdServices\Exception\ServiceException
+     * @expectedExceptionCode 101
+     */
+    public function testGetMobileAuthenticateStatusFault()
+    {
+        $this->service->getMobileAuthenticateStatus('', false);
     }
 }

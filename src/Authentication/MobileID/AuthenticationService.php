@@ -56,9 +56,7 @@ class AuthenticationService extends AbstractService
             ]);
 
             if (array_key_exists('Status', $result) && in_array($result['Status'], ['OK', 'USER_AUTHENTICATED'])) {
-                $hydrator = new ClassMethods();
-                $hydrator->setUnderscoreSeparatedKeys(false);
-                return $hydrator->hydrate($result, new AuthenticateResponse());
+                return $this->getHydrator()->hydrate($result, new AuthenticateResponse());
             } else {
                 throw new AuthenticationException($result['Status']);
             }
@@ -67,6 +65,39 @@ class AuthenticationService extends AbstractService
         } catch (\Exception $e) {
             throw new AuthenticationException('Unknown exception has occurred.', null, $e);
         }
+    }
+
+    /**
+     * @param  string  $sessionCode
+     * @param  boolean $waitSignature
+     * @return AuthenticateStatusResponse
+     * @throws AuthenticationException
+     * @throws ServiceException
+     * @throws ValidationException
+     */
+    public function getMobileAuthenticateStatus($sessionCode, $waitSignature)
+    {
+        if (!is_bool($waitSignature)) {
+            throw ValidationException::invalidValue('WaitSignature', is_object($waitSignature) ? get_class($waitSignature) : gettype($waitSignature), 'boolean');
+        }
+
+        try {
+            $result = $this->soap->call('GetMobileAuthenticateStatus', [
+                'SessCode'      => $sessionCode,
+                'WaitSignature' => $waitSignature
+            ]);
+
+            return $this->getHydrator()->hydrate($result, new AuthenticateStatusResponse());
+        } catch (\SoapFault $e) {
+            throw $this->soapError($e);
+        } catch (\Exception $e) {
+            throw new AuthenticationException('Unknown exception has occurred.', null, $e);
+        }
+    }
+
+    protected function getHydrator()
+    {
+        return (new ClassMethods())->setUnderscoreSeparatedKeys(false);
     }
 
     protected function validatePersonalCode($personalCode)
