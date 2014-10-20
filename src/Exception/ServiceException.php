@@ -48,6 +48,15 @@ class ServiceException extends IdServicesException
     public static function soapFault(\SoapFault $e)
     {
         $code = $e->getMessage();
+
+        if (!in_array($code, static::$errorCodeMap)) {
+            var_dump($e);
+        }
+
+        if (!in_array($code, static::$errorCodeMap) && in_array((string)$e->getCode(), static::$errorCodeMap)) {
+            $code = $e->getCode();
+        }
+
         $message = static::$errorCodeMap[$code];
 
         if (isset($e->detail) && isset($e->detail->message)) {
