@@ -42,7 +42,7 @@ class SignatureService extends AbstractService
                 throw new SigningException($result['Status']);
             }
         } catch (\SoapFault $e) {
-            $this->catchSoapError($e);
+            throw $this->soapError($e);
         }
     }
 
@@ -56,7 +56,7 @@ class SignatureService extends AbstractService
                 throw new SigningException($result['Status']);
             }
         } catch (\SoapFault $e) {
-            $this->catchSoapError($e);
+            throw $this->soapError($e);
         }
     }
 
@@ -70,7 +70,7 @@ class SignatureService extends AbstractService
                 throw new SigningException($result['Status']);
             }
         } catch (\SoapFault $e) {
-            $this->catchSoapError($e);
+            throw $this->soapError($e);
         }
     }
 
@@ -84,7 +84,7 @@ class SignatureService extends AbstractService
                 throw new SigningException($result['Status']);
             }
         } catch (\SoapFault $e) {
-            $this->catchSoapError($e);
+            throw $this->soapError($e);
         }
     }
 
@@ -98,7 +98,7 @@ class SignatureService extends AbstractService
                 throw new SigningException($result['Status']);
             }
         } catch (\SoapFault $e) {
-            $this->catchSoapError($e);
+            throw $this->soapError($e);
         }
     }
 
@@ -126,7 +126,7 @@ class SignatureService extends AbstractService
                 throw new SigningException($result['Status']);
             }
         } catch (\SoapFault $e) {
-            $this->catchSoapError($e);
+            throw $this->soapError($e);
         }
     }
 
@@ -144,7 +144,7 @@ class SignatureService extends AbstractService
                 throw new SigningException($result['Status']);
             }
         } catch (\SoapFault $e) {
-            $this->catchSoapError($e);
+            throw $this->soapError($e);
         }
     }
 
@@ -165,7 +165,7 @@ class SignatureService extends AbstractService
                 throw new SigningException($result['Status']);
             }
         } catch (\SoapFault $e) {
-            $this->catchSoapError($e);
+            throw $this->soapError($e);
         }
     }
 
@@ -217,7 +217,7 @@ class SignatureService extends AbstractService
                 throw new SigningException($result['Status']);
             }
         } catch (\SoapFault $e) {
-            $this->catchSoapError($e);
+            throw $this->soapError($e);
         }
     }
 }

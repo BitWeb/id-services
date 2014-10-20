@@ -11,10 +11,10 @@ class ValidationException extends AuthenticationException
         );
     }
 
-    public static function invalidPhoneNumber($phone, $min = 11, $max = 12)
+    public static function invalidPhoneNumber($phone, $min = 11, $max = 12, $countryCode = '+372')
     {
         return new static(
-            sprintf('Invalid phone number "%s", expected %s to %s chars with county code.', $phone, $min, $max)
+            sprintf('Invalid phone number "%s", expected %s to %s chars with county code "%s".', $phone, $min, $max, $countryCode)
         );
     }
 

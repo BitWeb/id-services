@@ -44,4 +44,16 @@ class ServiceException extends IdServicesException
         '413' => ServiceException::ERROR_CODE_413,
         '503' => ServiceException::ERROR_CODE_503
     ];
+
+    public static function soapFault(\SoapFault $e)
+    {
+        $code = $e->getMessage();
+        $message = static::$errorCodeMap[$code];
+
+        if (isset($e->detail) && isset($e->detail->message)) {
+            $message .= ' ' . $e->detail->message;
+        }
+
+        return new static($message, (int)$code, $e);
+    }
 }

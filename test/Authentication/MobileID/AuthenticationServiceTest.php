@@ -2,25 +2,58 @@
 
 namespace BitWeb\IdServicesTest\Authentication\MobileID;
 
+use BitWeb\IdServices\Authentication\MobileID\AuthenticateResponse;
 use BitWeb\IdServices\Authentication\MobileID\AuthenticationService;
+use BitWeb\IdServices\Exception\ServiceException;
 
 class AuthenticationServiceTest extends \PHPUnit_Framework_TestCase
 {
-    public function testGenerateRandomHexString()
+    /**
+     * @var AuthenticationService
+     */
+    protected $service;
+
+    protected function setUp()
     {
-        $authService = new AuthenticationService();
+        $this->service = new AuthenticationService();
+        $this->service->setWsdl()->initSoap();
 
-        $this->assertEquals(2, strlen($authService->generateRandomHexString(2)));
-        $this->assertEquals(100, strlen($authService->generateRandomHexString(100)));
-        $this->assertEquals(1000, strlen($authService->generateRandomHexString(1000)));
+        parent::setUp();
+    }
 
-        $generated = [];
-        for ($i = 0; $i < 1000; $i++) {
-            $generated[] = $authService->generateRandomHexString(200);
+    public function testMobileAuthenticateSuccess()
+    {
+        $response = $this->service->mobileAuthenticate('51001091072', '+37260000007', 'EST', 'Testimine', 'Testimine');
+
+        $this->assertInstanceOf(AuthenticateResponse::class, $response);
+        $this->assertEquals(4, strlen($response->getChallengeID()));
+        $this->assertTrue(is_int($response->getSessCode()));
+    }
+
+    /**
+     * @expectedException \BitWeb\IdServices\Exception\ServiceException
+     */
+    public function testMobileAuthenticationFailOnMobileIDNotActivated()
+    {
+        try {
+            $this->service->mobileAuthenticate('38002240211', '+37200001', 'EST', 'Testimine', 'Testimine');
+        } catch (ServiceException $e) {
+            $this->assertEquals(303, $e->getCode());
+            throw $e;
         }
+    }
 
-        for ($n = 0; $n < 1000; $n++) {
-            $this->assertFalse(in_array($authService->generateRandomHexString(200), $generated));
+    /**
+     * @expectedException \BitWeb\IdServices\Exception\ServiceException
+     */
+    public function testMobileAuthenticationFailOnCertificatesRevoked()
+    {
+        try {
+            $result = $this->service->mobileAuthenticate('14212128027', '+37200009', 'EST', 'Testimine', 'Testimine');
+            var_dump($result);
+        } catch (ServiceException $e) {
+            $this->assertEquals(302, $e->getCode());
+            throw $e;
         }
     }
 }

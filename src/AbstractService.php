@@ -64,9 +64,12 @@ class AbstractService
         return $this;
     }
 
-    protected function catchSoapError(\SoapFault $e)
+    /**
+     * @param \SoapFault $e
+     * @return ServiceException
+     */
+    protected function soapError(\SoapFault $e)
     {
-        $code = $e->getMessage();
-        throw new ServiceException(ServiceException::$errorCodeMap[$code], $code);
+        return ServiceException::soapFault($e);
     }
 }

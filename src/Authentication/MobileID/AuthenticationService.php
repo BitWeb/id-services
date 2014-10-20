@@ -5,9 +5,36 @@ namespace BitWeb\IdServices\Authentication\MobileID;
 use BitWeb\IdServices\AbstractService;
 use BitWeb\IdServices\Authentication\Exception\AuthenticationException;
 use BitWeb\IdServices\Authentication\Exception\ValidationException;
+use BitWeb\IdServices\Exception\ServiceException;
+use Zend\Stdlib\Hydrator\ClassMethods;
 
 class AuthenticationService extends AbstractService
 {
+    const COUNTRY_CODE_ESTONIA = 'EE';
+
+    const LANGUAGE_ESTONIAN   = 'EST';
+    const LANGUAGE_ENGLISH    = 'ENG';
+    const LANGUAGE_LITHUANIAN = 'LIT';
+    const LANGUAGE_RUSSIAN    = 'RUS';
+
+    protected static $languageCodes = [
+        self::LANGUAGE_ESTONIAN,
+        self::LANGUAGE_ENGLISH,
+        self::LANGUAGE_LITHUANIAN,
+        self::LANGUAGE_RUSSIAN
+    ];
+
+    /**
+     * @param  string $personalCode
+     * @param  string $phoneNumber
+     * @param  string $language
+     * @param  string $serviceName
+     * @param  string $displayMessage
+     * @return AuthenticateResponse on successful query.
+     * @throws AuthenticationException
+     * @throws ServiceException
+     * @throws ValidationException
+     */
     public function mobileAuthenticate($personalCode, $phoneNumber, $language, $serviceName, $displayMessage)
     {
         $this->validatePersonalCode($personalCode);
@@ -17,24 +44,28 @@ class AuthenticationService extends AbstractService
         $this->validateDisplayMessage($displayMessage);
 
         try {
-            $result = $this->soap->MobileAuthenticate(
-                $personalCode,
-                'EE',
-                $phoneNumber,
-                $language,
-                $serviceName,
-                $displayMessage,
-                $this->generateRandomHexString(20),
-                'asynchClientServer'
-            );
-            if (array_key_exists('Status', $result) && $result['Status'] === 'OK') {
-                // @todo return object with all response data
-                return $result;
+            $result = $this->soap->call('MobileAuthenticate', [
+                'IDCode'           => $personalCode,
+                'CountryCode'      => self::COUNTRY_CODE_ESTONIA,
+                'PhoneNo'          => $phoneNumber,
+                'Language'         => $language,
+                'ServiceName'      => $serviceName,
+                'MessageToDisplay' => $displayMessage,
+                'SPChallenge'      => $this->generateRandomNumbers(20),
+                'MessagingMode'    => 'asynchClientServer'
+            ]);
+
+            if (array_key_exists('Status', $result) && in_array($result['Status'], ['OK', 'USER_AUTHENTICATED'])) {
+                $hydrator = new ClassMethods();
+                $hydrator->setUnderscoreSeparatedKeys(false);
+                return $hydrator->hydrate($result, new AuthenticateResponse());
             } else {
                 throw new AuthenticationException($result['Status']);
             }
         } catch (\SoapFault $e) {
-            $this->catchSoapError($e);
+            throw $this->soapError($e);
+        } catch (\Exception $e) {
+            throw new AuthenticationException('Unknown exception has occurred.', null, $e);
         }
     }
 
@@ -47,17 +78,21 @@ class AuthenticationService extends AbstractService
 
     protected function validatePhoneNumber($phoneNumber)
     {
-        if (strlen($phoneNumber) < 11 || strlen($phoneNumber) > 12) {
+        if (substr($phoneNumber, 0, 4) !== '+372') {
             throw ValidationException::invalidPhoneNumber($phoneNumber);
+        }
+
+        // allow shorter numbers for UnitTests and testing
+        $min = 'https://www.openxades.org:9443/?wsdl' === $this->wsdl ? 9 : 11;
+        if (strlen($phoneNumber) < $min || strlen($phoneNumber) > 12) {
+            throw ValidationException::invalidPhoneNumber($phoneNumber, $min);
         }
     }
 
     protected function validateLanguage($language)
     {
-        $validLanguages = ['EST', 'ENG', 'RUS', 'LIT'];
-
-        if (!in_array($language, $validLanguages)) {
-            throw ValidationException::invalidLanguage($language, $validLanguages);
+        if (!in_array($language, self::$languageCodes)) {
+            throw ValidationException::invalidLanguage($language, self::$languageCodes);
         }
     }
 
@@ -75,14 +110,13 @@ class AuthenticationService extends AbstractService
         }
     }
 
-    /**
-     * @todo move to bitweb/stdlib StringUtil
-     *
-     * @param  int $length
-     * @return string
-     */
-    public function generateRandomHexString($length)
+    protected function generateRandomNumbers($length)
     {
-        return bin2hex(openssl_random_pseudo_bytes($length / 2));
+        $string = '';
+        for ($i = 0; $i < $length; $i++) {
+            $string .= mt_rand(0, 9);
+        }
+
+        return $string;
     }
 }
