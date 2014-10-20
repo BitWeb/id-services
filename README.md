@@ -1,9 +1,9 @@
-id-card
+id-services
 =======
 [![Build Status](https://travis-ci.org/BitWeb/id-services.svg?branch=master)](https://travis-ci.org/BitWeb/id-services)
 [![Coverage Status](https://img.shields.io/coveralls/BitWeb/id-services.svg)](https://coveralls.io/r/BitWeb/id-services?branch=master)
 
-BitWeb plugin for Id Card authentication ang signing.
+BitWeb plugin for Estonian Id Card and Mobile ID authentication ang signing.
 
 ### Usage:
 
@@ -26,8 +26,9 @@ or add following to composer.json
 ##### Add id-card folder into your public folder
 ##### The folder should contain index.php with following contents:
 ```php
-use BitWeb\IdCard\Authentication\IdCardAuthentication;
+use BitWeb\IdServices\Authentication\IdCard\Authentication;
 
+// make everything relative to the project root
 chdir(dirname(dirname(__DIR__)));
 
 // Autoload classes
@@ -37,14 +38,14 @@ Zend\Mvc\Application::init(require 'config/application.config.php');
 
 $redirectUrl = urldecode($_GET["redirectUrl"]);
 
-if (!IdCardAuthentication::isSuccessful()) {
+if (!Authentication::isSuccessful()) {
     $redirectUrl = '/id-card/no-card-found';
 } else {
-    IdCardAuthentication::login();
+    Authentication::login();
 }
-$headerStr = 'Location: ' . $redirectUrl;
+$headerString = 'Location: ' . $redirectUrl;
 
-header($headerStr);
+header($headerString);
 ```
 ##### In same folder should exist .htaccess:
 ```
