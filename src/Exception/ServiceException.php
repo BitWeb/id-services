@@ -49,14 +49,12 @@ class ServiceException extends IdServicesException
     {
         $code = $e->getMessage();
 
-        if (!in_array($code, static::$errorCodeMap)) {
-            var_dump($e->getMessage());
-            var_dump($e->getCode());
-            var_dump($e->getPrevious());
-        }
+        // fix undefined index error in HHVM
+        if (in_array($code, static::$errorCodeMap)) {
+            $xml = $e->getMessage();
+            $faultString = '<faultstring xml:lang="en">';
 
-        if (!in_array($code, static::$errorCodeMap) && in_array((string)$e->getCode(), static::$errorCodeMap)) {
-            $code = $e->getCode();
+            $code = substr($xml, strpos($xml, $faultString) + strlen($faultString), 3);
         }
 
         $message = static::$errorCodeMap[$code];

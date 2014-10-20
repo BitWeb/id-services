@@ -49,8 +49,7 @@ class AuthenticationServiceTest extends \PHPUnit_Framework_TestCase
     public function testMobileAuthenticationFailOnCertificatesRevoked()
     {
         try {
-            $result = $this->service->mobileAuthenticate('14212128027', '+37200009', 'EST', 'Testimine', 'Testimine');
-            var_dump($result);
+            $this->service->mobileAuthenticate('14212128027', '+37200009', 'EST', 'Testimine', 'Testimine');
         } catch (ServiceException $e) {
             $this->assertEquals(302, $e->getCode());
             throw $e;
