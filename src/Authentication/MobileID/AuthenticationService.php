@@ -58,9 +58,9 @@ class AuthenticationService extends AbstractService
                 'MessagingMode'    => 'asynchClientServer'
             ];
 
-            $this->log(Logger::INFO, 'SOAP::MobileAuthenticate request: ' . serialize($data));
+            $this->log(Logger::INFO, $this->wsdl . ' SOAP::MobileAuthenticate request: ' . serialize($data));
             $result = $this->soap->call('MobileAuthenticate', $data);
-            $this->log(Logger::INFO, 'SOAP::MobileAuthenticate response status ' . serialize($result));
+            $this->log(Logger::INFO, $this->wsdl . ' SOAP::MobileAuthenticate response status ' . serialize($result));
 
             $status = $result['Status'];
             if (in_array($status, ['OK', 'USER_AUTHENTICATED'])) {
