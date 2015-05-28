@@ -71,6 +71,7 @@ class AbstractService
         }
 
         $this->soap = new Client($this->wsdl, $options);
+        $this->log(Logger::INFO, 'WSDL Client created. URL: ' . $this->getWsdl());
 
         return $this;
     }
@@ -81,6 +82,8 @@ class AbstractService
      */
     protected function soapError(\SoapFault $e)
     {
+        $this->log(Logger::ERR, 'SopFault: ' . serialize($e));
+
         return ServiceException::soapFault($e);
     }
 

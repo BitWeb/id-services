@@ -18,6 +18,7 @@ class ServiceException extends IdServicesException
     const ERROR_CODE_303 = 'User\'s Mobile-ID is not activated.';
     const ERROR_CODE_304 = 'User\'s certificate is stopped.';
     const ERROR_CODE_305 = 'User\'s certificate has expired.';
+    const ERROR_CODE_405 = 'Client error. Please try again.';
     const ERROR_CODE_413 = 'Input message exceeds allowed maximum limit.';
     const ERROR_CODE_503 = 'You have exceeded allowed maximum concurrent requests limit.';
 
@@ -41,6 +42,7 @@ class ServiceException extends IdServicesException
         '303' => ServiceException::ERROR_CODE_303,
         '304' => ServiceException::ERROR_CODE_304,
         '305' => ServiceException::ERROR_CODE_305,
+        '405' => ServiceException::ERROR_CODE_405,
         '413' => ServiceException::ERROR_CODE_413,
         '503' => ServiceException::ERROR_CODE_503
     ];
