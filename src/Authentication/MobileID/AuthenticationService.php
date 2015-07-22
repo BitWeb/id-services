@@ -38,6 +38,8 @@ class AuthenticationService extends AbstractService
      */
     public function mobileAuthenticate($personalCode, $phoneNumber, $language, $serviceName, $displayMessage)
     {
+        $this->throwIfSoapNotInitialized();
+
         $this->log(Logger::INFO, '')->log(Logger::INFO, 'SOAP::MobileAuthenticate start validation');
         $this->validatePersonalCode($personalCode);
         $this->validatePhoneNumber($phoneNumber);
@@ -91,6 +93,8 @@ class AuthenticationService extends AbstractService
      */
     public function getMobileAuthenticateStatus($sessionCode, $waitSignature)
     {
+        $this->throwIfSoapNotInitialized();
+
         $this->log(Logger::INFO, '')->log(Logger::INFO, 'SOAP::GetMobileAuthenticateStatus start validation');
         if (!is_bool($waitSignature)) {
             throw ValidationException::invalidValue('WaitSignature', is_object($waitSignature) ? get_class($waitSignature) : gettype($waitSignature), 'boolean');

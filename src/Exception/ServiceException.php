@@ -4,6 +4,9 @@ namespace BitWeb\IdServices\Exception;
 
 class ServiceException extends IdServicesException
 {
+    /**
+     * Error codes translated according to http://www.sk.ee/upload/files/DigiDocService_spec_est.pdf version 2.127
+     */
     const ERROR_CODE_100 = 'General error.';
     const ERROR_CODE_101 = 'Incorrect input values.';
     const ERROR_CODE_102 = 'Required parameter is missing.';
@@ -23,8 +26,6 @@ class ServiceException extends IdServicesException
     const ERROR_CODE_503 = 'You have exceeded allowed maximum concurrent requests limit.';
 
     /**
-     * Error codes translated according to http://www.sk.ee/upload/files/DigiDocService_spec_est.pdf version 2.127
-     *
      * @var array
      */
     public static $errorCodeMap = [
@@ -66,5 +67,10 @@ class ServiceException extends IdServicesException
         }
 
         return new static($message, (int)$code, $e);
+    }
+
+    public static function clientNotInitialized()
+    {
+        return new static('SOAP client must be initialized for this action!');
     }
 }
