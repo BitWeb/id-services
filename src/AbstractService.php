@@ -34,7 +34,7 @@ class AbstractService
     public function setWsdl($wsdl = null)
     {
         if ($wsdl === null) {
-            $wsdl = 'https://www.openxades.org:9443/?wsdl';
+            $wsdl = 'https://tsp.demo.sk.ee/?wsdl';
         }
 
         $this->wsdl = $wsdl;
