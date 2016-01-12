@@ -4,6 +4,11 @@ namespace BitWeb\IdServices\Authentication\Exception;
 
 class ValidationException extends AuthenticationException
 {
+    public static function missingPersonalCodeAndPhoneNumber()
+    {
+        return new static('Please enter personal code or phone number.');
+    }
+
     public static function invalidPersonalCode($personalCode, $chars = 11)
     {
         return new static(
