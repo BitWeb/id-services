@@ -140,7 +140,7 @@ class AuthenticationService extends AbstractService
         }
 
         // allow shorter numbers for UnitTests and testing
-        $min = 'https://www.openxades.org:9443/?wsdl' === $this->wsdl ? 9 : 11;
+        $min = 'https://tsp.demo.sk.ee/?wsdl' === $this->wsdl ? 9 : 11;
         if (strlen($phoneNumber) < $min || strlen($phoneNumber) > 12) {
             throw ValidationException::invalidPhoneNumber($phoneNumber, $min);
         }
