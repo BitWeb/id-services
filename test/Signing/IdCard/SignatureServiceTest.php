@@ -30,7 +30,7 @@ class SignatureServiceTest extends \PHPUnit_Framework_TestCase
         $service->setWsdl();
         $service->initSoap();
         $this->assertTrue(is_int($service->startSession($this->testFileName)));
-        $this->assertEquals('https://www.openxades.org:9443/?wsdl', $service->getWsdl());
+        $this->assertEquals('https://tsp.demo.sk.ee/?wsdl', $service->getWsdl());
     }
 
     public function testStartServiceDoesAutomaticLogin()
