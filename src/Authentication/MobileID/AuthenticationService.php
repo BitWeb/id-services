@@ -7,7 +7,7 @@ use BitWeb\IdServices\Authentication\Exception\AuthenticationException;
 use BitWeb\IdServices\Authentication\Exception\ValidationException;
 use BitWeb\IdServices\Exception\ServiceException;
 use Zend\Log\Logger;
-use Zend\Stdlib\Hydrator\ClassMethods;
+use Zend\Hydrator\ClassMethods;
 
 class AuthenticationService extends AbstractService
 {

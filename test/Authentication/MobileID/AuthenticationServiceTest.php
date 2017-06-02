@@ -23,7 +23,7 @@ class AuthenticationServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testMobileAuthenticateSuccess()
     {
-        $response = $this->service->mobileAuthenticate('51001091072', '+37260000007', 'EST', 'Testimine', 'Testimine');
+        $response = $this->service->mobileAuthenticate('11412090004', '+37200000766', 'EST', 'Testimine', 'Testimine');
 
         $this->assertInstanceOf(AuthenticateResponse::class, $response);
         $this->assertEquals(4, strlen($response->getChallengeID()));
@@ -50,7 +50,7 @@ class AuthenticationServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testGetMobileAuthenticateStatusSuccess()
     {
-        $response = $this->service->mobileAuthenticate('51001091072', '+37260000007', 'EST', 'Testimine', 'Testimine');
+        $response = $this->service->mobileAuthenticate('11412090004', '+37200000766', 'EST', 'Testimine', 'Testimine');
 
         $this->assertInstanceOf(AuthenticateStatusResponse::class, $this->service->getMobileAuthenticateStatus($response->getSessCode(), false));
     }

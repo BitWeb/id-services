@@ -56,6 +56,11 @@ class AbstractService
      */
     public function initSoap($bindTo = null)
     {
+        // required for SOAP requests to work under PHP 7
+        if (version_compare(PHP_VERSION, '7.0.0') >= 0) {
+            ini_set('soap.wsdl_cache_enabled', '0');
+        }
+
         if (null === $this->wsdl) {
             throw new ServiceException('No WSDL URL provided.');
         }
