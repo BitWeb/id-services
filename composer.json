@@ -31,7 +31,7 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=5.6",
         "zendframework/zend-soap": "~2.3",
         "zendframework/zend-stdlib": "~3.0",
         "zendframework/zend-hydrator": "~2.2",

@@ -3,7 +3,9 @@ id-services
 [![Build Status](https://travis-ci.org/BitWeb/id-services.svg?branch=master)](https://travis-ci.org/BitWeb/id-services)
 [![Coverage Status](https://img.shields.io/coveralls/BitWeb/id-services.svg)](https://coveralls.io/r/BitWeb/id-services?branch=master)
 
-BitWeb plugin for Estonian Id Card and Mobile ID authentication ang signing.
+BitWeb plugin for Estonian Id Card and Mobile ID authentication and signing.
+
+**Requires PHP version 5.6 and up.**
 
 ### Usage:
 
