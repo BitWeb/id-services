@@ -43,10 +43,12 @@ class Authentication
             }
         }
 
+        $socialSecurityNumber = substr($parameters['serialNumber'], 0, 6) === 'PNOEE-' ? substr($parameters['serialNumber'], 6) : $parameters['serialNumber'];
+
         $user = new User();
         $user->setFirstName($parameters['GN']);
         $user->setLastName($parameters['SN']);
-        $user->setSocialSecuritynumber($parameters['serialNumber']);
+        $user->setSocialSecuritynumber($socialSecurityNumber);
         $user->setCountry($parameters['C']);
 
         self::saveIdCardUserToSession($user);
