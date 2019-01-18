@@ -23,7 +23,7 @@ class AuthenticationServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testMobileAuthenticateSuccess()
     {
-        $response = $this->service->mobileAuthenticate('11412090004', '+37200000766', 'EST', 'Testimine', 'Testimine');
+        $response = $this->service->mobileAuthenticate('60001019906', '+37200000766', 'EST', 'Testimine', 'Testimine');
 
         $this->assertInstanceOf(AuthenticateResponse::class, $response);
         $this->assertEquals(4, strlen($response->getChallengeID()));
@@ -36,7 +36,7 @@ class AuthenticationServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testMobileAuthenticationFailOnMobileIDNotActivated()
     {
-        $this->service->mobileAuthenticate('38002240211', '+37200001', 'EST', 'Testimine', 'Testimine');
+        $this->service->mobileAuthenticate('60001019928', '+37200000366', 'EST', 'Testimine', 'Testimine');
     }
 
     /**
@@ -45,12 +45,12 @@ class AuthenticationServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testMobileAuthenticationFailOnCertificatesRevoked()
     {
-        $this->service->mobileAuthenticate('14212128027', '+37200009', 'EST', 'Testimine', 'Testimine');
+        $this->service->mobileAuthenticate('60001019939', '+37200000266', 'EST', 'Testimine', 'Testimine');
     }
 
     public function testGetMobileAuthenticateStatusSuccess()
     {
-        $response = $this->service->mobileAuthenticate('11412090004', '+37200000766', 'EST', 'Testimine', 'Testimine');
+        $response = $this->service->mobileAuthenticate('60001019906', '+37200000766', 'EST', 'Testimine', 'Testimine');
 
         $this->assertInstanceOf(AuthenticateStatusResponse::class, $this->service->getMobileAuthenticateStatus($response->getSessCode(), false));
     }
