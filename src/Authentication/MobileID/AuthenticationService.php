@@ -31,18 +31,19 @@ class AuthenticationService extends AbstractService
      * @param  string $language
      * @param  string $serviceName
      * @param  string $displayMessage
+     * @param  boolean $returnCertData
+     * @param  boolean $returnRevocationData
      * @return AuthenticateResponse on successful query.
      * @throws AuthenticationException
      * @throws ServiceException
      * @throws ValidationException
      */
-    public function mobileAuthenticate($personalCode, $phoneNumber, $language, $serviceName, $displayMessage)
+    public function mobileAuthenticate($personalCode, $phoneNumber, $language, $serviceName, $displayMessage, $returnCertData = false, $returnRevocationData = false)
     {
         $this->throwIfSoapNotInitialized();
 
         $this->log(Logger::INFO, '')->log(Logger::INFO, 'SOAP::MobileAuthenticate start validation');
-        $this->validatePersonalCode($personalCode);
-        $this->validatePhoneNumber($phoneNumber);
+        $this->validatePersonalCodeAndPhoneNumber($personalCode, $phoneNumber);
         $this->validateLanguage($language);
         $this->validateServiceName($serviceName);
         $this->validateDisplayMessage($displayMessage);
@@ -50,14 +51,16 @@ class AuthenticationService extends AbstractService
 
         try {
             $data = [
-                'IDCode'           => $personalCode,
-                'CountryCode'      => self::COUNTRY_CODE_ESTONIA,
-                'PhoneNo'          => $phoneNumber,
-                'Language'         => $language,
-                'ServiceName'      => $serviceName,
-                'MessageToDisplay' => $displayMessage,
-                'SPChallenge'      => $this->generateRandomNumbers(20),
-                'MessagingMode'    => 'asynchClientServer'
+                'IDCode'               => $personalCode,
+                'CountryCode'          => self::COUNTRY_CODE_ESTONIA,
+                'PhoneNo'              => $phoneNumber,
+                'Language'             => $language,
+                'ServiceName'          => $serviceName,
+                'MessageToDisplay'     => $displayMessage,
+                'SPChallenge'          => $this->generateRandomNumbers(20),
+                'MessagingMode'        => 'asynchClientServer',
+                'ReturnCertData'       => ($returnCertData == true),
+                'ReturnRevocationData' => ($returnRevocationData == true)
             ];
 
             $this->log(Logger::INFO, $this->wsdl . ' SOAP::MobileAuthenticate request: ' . serialize($data));
@@ -124,6 +127,21 @@ class AuthenticationService extends AbstractService
     protected function getHydrator()
     {
         return (new ClassMethods())->setUnderscoreSeparatedKeys(false);
+    }
+
+    // Validate that either personalCode or phoneNumber is present
+    protected function validatePersonalCodeAndPhoneNumber($personalCode, $phoneNumber) {
+        if (!isset($personalCode) && !isset($phoneNumber)) {
+            throw ValidationException::missingPersonalCodeAndPhoneNumber();
+        }
+
+        if (isset($personalCode)) {
+            $this->validatePersonalCode($personalCode);
+        }
+
+        if (isset($phoneNumber)) {
+            $this->validatePhoneNumber($phoneNumber);
+        }
     }
 
     protected function validatePersonalCode($personalCode)
